@@ -1,4 +1,4 @@
-ll: setup
+all: setup
 
 setup:
 	@echo "Installing the dependencies"
@@ -7,6 +7,9 @@ setup:
 
 read_data:
 	@. venv/bin/activate && python3 data_analyse.py
+
+test:
+	@. venv/bin/activate && python3 nn.py
 
 clean:
 	rm -rf ./venv
