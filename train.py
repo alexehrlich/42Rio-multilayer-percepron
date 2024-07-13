@@ -4,7 +4,7 @@ import pandas as pd
 net = Network()
 
 #create hidden layers with ReLU activation
-net.add_layer(Layer(64, 10, ReLU, derivative_ReLU))
+net.add_layer(Layer(64, 30, ReLU, derivative_ReLU))
 net.add_layer(Layer(32, 64, ReLU, derivative_ReLU))
 
 #add an output layer with the softmax probability distribution
