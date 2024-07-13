@@ -28,4 +28,15 @@ for i in range(2, 31):
     #and here we subtract the mean. Now they are centered.
     df[i] = (df[i] - mean)/std
 
-print(df)
+# Step 1: Select the target column
+Y_train = df.iloc[:500, 0]
+Y_test = df.iloc[500:, 0]
+
+# Step 2: Select the features columns (columns 2 to 11)
+X_train = df.iloc[:500, 1:11]
+X_test = df.iloc[500:, 1:11]
+
+X_train.to_csv('features_train.csv', index=False)
+X_test.to_csv('features_test.csv', index=False)
+Y_train.to_csv('target_train.csv', index=False)
+Y_test.to_csv('target_test.csv', index=False)
