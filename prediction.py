@@ -14,8 +14,8 @@ def binary_cross_entropy(target_vec, prediction_vec):
 
 net = Network.load_model("model.pkl")
 
-features_df_test = pd.read_csv("./features_test.csv")
-target_df_test = pd.read_csv("./target_test.csv")
+features_df_test = pd.read_csv("./csv/created/features_test.csv")
+target_df_test = pd.read_csv("./csv/created/target_test.csv")
 X_test = features_df_test.to_numpy()
 Y_test = target_df_test.to_numpy()
 
@@ -23,7 +23,6 @@ results = []
 for test, target in zip(X_test, Y_test):
 	test_c = test.reshape(-1, 1)
 	out = net.feed_forward(test_c)
-
 	results.append(out)
 
 print("BCE: ", binary_cross_entropy(Y_test, results))

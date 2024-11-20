@@ -15,10 +15,7 @@ prediction:
 	@. venv/bin/activate && python3 prediction.py
 
 clean:
-	rm target_test.csv
-	rm target_train.csv
-	rm features_test.csv
-	rm features_train.csv
+	rm -rf ./csv/created
 
 fclean: clean
 	rm -rf ./venv

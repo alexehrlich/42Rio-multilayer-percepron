@@ -34,10 +34,8 @@ def cross_entropy_loss(predictions, targets):
 
 	return loss
 
-
 def derivative_crossentropy_softmax(layer_out, target_vec):
 	return layer_out - target_vec
-
 
 
 #The input vector has a num_input(row) x 1(col) dimension
