@@ -6,7 +6,7 @@ setup:
 	@. venv/bin/activate && pip install -r ./requirements.txt
 
 preprocess_data:
-	@. venv/bin/activate && python3 data_analyse.py
+	@. venv/bin/activate && python3 data_preprocess.py
 
 train:
 	@. venv/bin/activate && python3 train.py

@@ -1,5 +1,5 @@
 venv/
-__pychache/
+__pychache__/
 target_train.csv
 target_test.csv
 features_train.csv
