@@ -1,0 +1,21 @@
+- Check LAyer requirements before training:
+	- first layer is of type input?
+	- last layer is of tyoe output?
+	- only one input and outputlayer in the net?
+	- At least two hidden layers?
+	- passed layer types can only be input, hidden, output
+	- Check dimension of the input features and the first layer
+
+- Calc Validation loss while training
+- calc validation accuracy in each epoch
+- Calc Binary Cross Entropy in prediction
+
+- Document the math of Softmax + CCE --> see book notes
+
+- maybe make the output shape more felxible
+
+- understand Softmax
+- understand BCE nad CCE
+- understand the comb of CCE and softmax calculation
+
+- write nice Readme with all the math

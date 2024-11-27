@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
-from functions import func_deriv, cross_entropy_loss
+from functions import func_deriv, categorial_cross_entropy_loss
 import pdb
 import random
 
@@ -11,49 +11,70 @@ class Network:
 		self.layers = []
 
 	def add_layer(self, layer):
-		#add layer and connect the layer to the previous one
-		# by creating a random init weight matrix(seed)
-		#Also create the weight matrix, the gradiet weight matrix with same shape and
+		"""
+			Add a layer to the net and connect to the previous,
+			by createing a random weight matrix of shape
+			(nodes of this layer x nodes of the previous layer).
+			Also creates a nabla matrix, to store all the gradients
+			of the Cost with respect to the weights.
+			Seed used for reproducability.
+		"""
 		self.layers.append(layer)
 		if layer.type != "input":
 			np.random.seed(39)
 			layer.weights = np.random.randn(layer.nodes, self.layers[-2].nodes)
 			layer.nabla_w = np.zeros(layer.weights.shape)
 
-	#returns the gradient of the cost with respect to all weigths
-	# and biases. The gradients are normalized to the batch size.
 	def backpropagation(self, features, target):
-		#loop through the layers and set the the gradients to the layers nabla matrix
+		"""
+			Pass the delta backwards. The layer fills its nabla 
+			matrix with the gradients of the Cost with
+			respect to weights and biases.The gradient is a special
+			calculation for the derivative of the Categorial Cross
+			Entropy function with respect to the z of the last layer.
+			See math here: TODO.
+		"""
 		net_out = self.feed_forward(features)
 		one_hot_target = self.one_hot(target)
-		loss = cross_entropy_loss(net_out, one_hot_target)
-		#calculate the gradients (weigths and biases) for each layer with backpropagation
+		loss = categorial_cross_entropy_loss(net_out, one_hot_target)
 
-		#The first is special, becuase of combination of CCE and softmax
-		gradient = self.layers[-1].activations - one_hot_target
-		flag = 0
+		delta = self.layers[-1].activations - one_hot_target
 		for layer in reversed(self.layers[1:]):
-			gradient = layer.backward(gradient, flag)
-			flag = 1
+			delta = layer.backward(delta)
 		return loss
 
 	def learn_parameter(self, eta):
+		"""
+			Update the weights matrix and bias vector with
+			Gradient descent. Change the weights/biases in 
+			the opposite direction of the slope of that 
+			parameter (with the minus)
+		"""
 		for layer in self.layers[1:]:
 			layer.biases -= eta * layer.nabla_b
 			layer.weights -= eta * layer.nabla_w
 
 	def feed_forward(self, input):
+		"""
+			Pass a given input vector through the
+			net and return the output of the last layer.
+			Since the first input layer has no activation function,
+			its activated outpur is the input itself.
+		"""
 		if len(self.layers) == 0:
 			raise EmptyNetworkError()
 		if input.shape[0] != self.layers[1].weights.shape[1]:
 			raise DimensionError()
-		#The output of the input layer is the input itself
 		self.layers[0].activations = input
 		for i in range(1, len(self.layers)):
 			self.layers[i].forward(self.layers[i-1].activations)
 		return self.layers[-1].activations
 
 	def one_hot(self, y_train):
+		"""
+			Encode the target value to make it
+			comparable to the networks output vector
+		"""
 		if y_train == 0:
 			return [[1], 
 					[0]]
@@ -61,7 +82,18 @@ class Network:
 			return [[0],
 					[1]]
 
-	#training data is a tuple of(featrues, target)
+	def validate(self, data):
+		right = 0
+		for features, label in data:
+			predicted = self.feed_forward(features)
+			result = np.argmax(predicted)
+			print(f"{label}, {result}")
+			if result == label:
+				right += 1
+		print(right)
+		pdb.set_trace()
+		return (f"{(right/len(data)*100):.2f}%")
+
 	def fit(self, training_data, epochs, eta, validation_data = None):
 		#TODO: Check layer requirements
 		loss_values = []
@@ -73,7 +105,10 @@ class Network:
 				loss += self.backpropagation(features, target)
 				self.learn_parameter(eta)
 			#update the weights and biases with learn_parameter()
-			print("Epoche - ", epoch, ", loss: ", loss)
+			if validation_data:
+				print("Epoche - ", epoch, ", Training CCE-loss: ", loss, ", Valid Accuracy: ", self.validate(validation_data))
+			else:
+				print("Epoche - ", epoch, ", Training CCE-loss: ", loss)
 			loss_values.append(loss)
 		# Plot the loss over epochs
 		plt.plot(np.arange(0, epochs), loss_values, label='Loss')
@@ -93,8 +128,14 @@ class Network:
 			return pickle.load(f)
 
 class Layer:
-
 	def __init__(self, layer_type, nodes, activation):
+		"""
+			Every derivative dC/dw_ij of the Cost with respect to the weights
+			is stored in a nabla matrix with the same shape as the weights matrix.
+			Same for the biases vector.
+			The inpt is the activation vactor of the prev layer, which is needed
+			in the backpropagation.
+		"""
 		self.type = layer_type
 		self.nodes = nodes
 		self.input = None
@@ -102,12 +143,15 @@ class Layer:
 		self.derivative_activation = func_deriv[activation]
 		self.weights = None
 		self.nabla_w = None
-		self.biases = np.zeros((nodes, 1)) #col vector of the biases
+		self.biases = np.zeros((nodes, 1))
 		self.nabla_b = np.zeros((nodes, 1))
-		self.z = np.zeros((nodes, 1)) #col vector of z's (weighted sums)
-		self.activations = np.zeros((nodes, 1)) #col vector of the activations
+		self.z = np.zeros((nodes, 1))
+		self.activations = np.zeros((nodes, 1))
 
 	def forward(self, input):
+		"""
+			input are the activatons of the previous layer.
+		"""
 		self.input = input
 		self.z = np.dot(self.weights, input) + self.biases
 		self.activations = self.activation(self.z)
@@ -118,20 +162,16 @@ class Layer:
 	# multiply TEMP by the input of that node, this is the derivative of the weight --> update the weight
 	# multiply TEMP by the OLD weight and return it --> Input for the next layer
 	# gradient is a vector with number_rows = number_nodes
-	def backward(self, gradient, flag=1):
+	def backward(self, delta):
 		#Elementwise multiplication of the passed gradient from previous layer
 		# with the derivative of the activation function of that layer.
-		if flag:
-			temp = np.multiply(gradient, self.derivative_activation(self.z))
+		if self.type != "output":
+			temp = np.multiply(delta, self.derivative_activation(self.z))
 		else:
-			temp = gradient
+			temp = delta
 
-		#Learning process of weights and biases
-		#print("Temp: ", temp)
 		self.nabla_b = temp
 		self.nabla_w = np.dot(temp, self.input.T)
-		#self.biases = self.biases - learning_rate * temp
-		#self.weights = self.weights - learning_rate * np.dot(temp, self.input.T)
 
 		#passing as gradient to the previous layer
 		return np.dot(self.weights.T, temp)

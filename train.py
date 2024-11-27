@@ -1,11 +1,12 @@
 from network import Network, Layer
 from functions import sigmoid, ReLU, softmax
 import pandas as pd
+import pdb
 
 net = Network()
 
 net.add_layer(Layer("input", 30, activation=None))
-net.add_layer(Layer("hidden", 32, activation=ReLU))
+net.add_layer(Layer("hidden", 20, activation=ReLU))
 net.add_layer(Layer("hidden", 16, activation=ReLU))
 net.add_layer(Layer("output", 2, activation=softmax))
 
@@ -27,12 +28,13 @@ try:
 	Y_val = target_df_validation.to_numpy()
 
 	training_data = []
+	validation_data = []
 	for X, Y in zip(X_train, Y_train):
-		X_r = X.reshape((30, 1))
-		Y_r = Y.reshape((1, 1))
-		training_data.append((X_r, Y_r))
+		training_data.append((X.reshape((30, 1)), Y[0]))
+	for X, Y in zip(X_val, Y_val):
+		validation_data.append((X.reshape((30, 1)), Y[0]))
 
-	net.fit(training_data, epochs=200, eta=0.01)
+	net.fit(training_data, epochs=1000, eta=0.01, validation_data=validation_data)
 	net.save_model("model.pkl")
 
 except Exception as e:

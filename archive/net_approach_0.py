@@ -18,7 +18,7 @@ def softmax(input):
 	#print(temp)
 	return temp / np.sum(temp)
 
-def cross_entropy_loss(predictions, targets):
+def categorial_cross_entropy_loss(predictions, targets):
 	# Ensure numerical stability by adding epsilon
 	epsilon = 1e-15
 	predictions = np.clip(predictions, epsilon, 1 - epsilon)
@@ -134,7 +134,7 @@ class Network:
 				out = self.feed_forward(sample_column)
 				#backpropagation
 				one_hot_target = self.one_hot(target)
-				loss = loss + cross_entropy_loss(out, one_hot_target)
+				loss = loss + categorial_cross_entropy_loss(out, one_hot_target)
 
 				#Derivation of Cross Entropy comined with Softmax (dL/dInput_k = Output_k - y_k) for that node
 				# Input_k (unactivated weighted sum of that node), Output_k (activated Input), 

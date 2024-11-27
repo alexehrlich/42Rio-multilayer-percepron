@@ -16,12 +16,10 @@ def sigmoid_prime(z):
 
 #Gets a vector and returns a vector
 def softmax(input):
-	#print(input)
 	temp = np.exp(input - np.max(input))
-	#print(temp)
 	return temp / np.sum(temp)
 
-def cross_entropy_loss(predictions, targets):
+def categorial_cross_entropy_loss(predictions, targets):
 	# Ensure numerical stability by adding epsilon
 	epsilon = 1e-15
 	predictions = np.clip(predictions, epsilon, 1 - epsilon)
@@ -36,6 +34,15 @@ def cross_entropy_loss(predictions, targets):
 	loss = -np.sum(temp)
 
 	return loss
+
+def binary_cross_entropy(target_vec, prediction_vec):
+	epsilon = 1e-15
+	predictions = np.clip(prediction_vec, epsilon, 1 - epsilon)
+	N = len(target_vec)
+	sum = 0
+	for i in range(len(target_vec)):
+		sum += target_vec[i][0] * math.log(predictions[i][1]) + (1 - target_vec[i][0]) * math.log(predictions[i][0])
+	return -sum/N
 
 def derivative_crossentropy_softmax(layer_out, target_vec):
 	return layer_out - target_vec
