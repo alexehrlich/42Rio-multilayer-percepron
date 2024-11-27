@@ -1,4 +1,4 @@
-from nn import Network, Layer
+from network import Network, Layer
 import pandas as pd
 import math
 import numpy as np
@@ -43,8 +43,6 @@ for test, target in zip(X, Y):
 		right += 1
 	else:
 		wrong += 1
-
-print(results)
 print(f"Total: {total}")
 print(f"Wrong: {wrong}, {wrong/total}")
 print(f"Right: {right}, {right/total}")

@@ -1,23 +1,38 @@
-from nn import Network, Layer, ReLU, derivative_crossentropy_softmax, softmax, derivative_ReLU
+from network import Network, Layer
+from functions import sigmoid, ReLU, softmax
 import pandas as pd
 
 net = Network()
 
-#create hidden layers with ReLU activation
-net.add_layer(Layer(32, 30, ReLU, derivative_ReLU))
-net.add_layer(Layer(16, 32, ReLU, derivative_ReLU))
+net.add_layer(Layer("input", 30, activation=None))
+net.add_layer(Layer("hidden", 32, activation=ReLU))
+net.add_layer(Layer("hidden", 16, activation=ReLU))
+net.add_layer(Layer("output", 2, activation=softmax))
 
-#add an output layer with the softmax probability distribution
-net.add_layer(Layer(2, 16, softmax, derivative_crossentropy_softmax))
+for i, layer in enumerate(net.layers):
+	if layer.weights is None:
+		print(f"Input layer {i} has no weigths.")
+	else:
+		print(f"Shape of weights of layer {i}: {layer.weights.shape}\n")
 
 try:
 	features_df_train = pd.read_csv("./csv/created/features_train.csv")
 	target_df_train = pd.read_csv("./csv/created/target_train.csv")
+	features_df_validation = pd.read_csv("./csv/created/features_val.csv")
+	target_df_validation = pd.read_csv("./csv/created/target_val.csv")
 
 	X_train = features_df_train.to_numpy()
 	Y_train = target_df_train.to_numpy()
+	X_val = features_df_validation.to_numpy()
+	Y_val = target_df_validation.to_numpy()
 
-	net.fit(X_train, Y_train)
+	training_data = []
+	for X, Y in zip(X_train, Y_train):
+		X_r = X.reshape((30, 1))
+		Y_r = Y.reshape((1, 1))
+		training_data.append((X_r, Y_r))
+
+	net.fit(training_data, epochs=200, eta=0.01)
 	net.save_model("model.pkl")
 
 except Exception as e:
