@@ -98,6 +98,8 @@ class Network:
 		for layer in self.layers[1:]:
 			layer.weights = layer.weights - (eta/len(mini_batch)*layer.nabla_w)
 			layer.biases = layer.biases - (eta/len(mini_batch)*layer.nabla_b)
+			layer.nabla_w = np.zeros(layer.weights.shape)
+			layer.nabla_b = np.zeros(layer.biases.shape)
 	
 	def save_model(self, file_name):
 		with open(file_name, 'wb') as f:

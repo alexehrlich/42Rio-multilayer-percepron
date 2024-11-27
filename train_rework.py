@@ -1,12 +1,13 @@
-from network import Network, Layer, sigmoid, sigmoid_prime, softmax
+from network_rework import Network, Layer
+from functions import sigmoid, ReLU, softmax
 import pandas as pd
 
-net = Network() 
+net = Network()
 
-net.add_layer(Layer("input", 30, None, None))
-net.add_layer(Layer("hidden", 32, sigmoid, sigmoid_prime))
-net.add_layer(Layer("hidden", 16, sigmoid, sigmoid_prime))
-net.add_layer(Layer("output", 2, softmax, sigmoid_prime))
+net.add_layer(Layer("input", 30, activation=None))
+net.add_layer(Layer("hidden", 20, activation=ReLU))
+net.add_layer(Layer("hidden", 16, activation=ReLU))
+net.add_layer(Layer("output", 2, activation=softmax))
 
 for i, 	layer in enumerate(net.layers):
 	if layer.weights is None:
@@ -31,11 +32,8 @@ try:
 		Y_r = Y.reshape((1, 1))
 		training_data.append((X_r, Y_r))
 
-	net.fit(training_data, 2000, 10, 0.001)
+	net.fit(training_data, epochs=200, eta=0.001)
 	net.save_model("model.pkl")
 
 except Exception as e:
 	print(e.message)
-
-
-
