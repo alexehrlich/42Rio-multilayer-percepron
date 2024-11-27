@@ -4,8 +4,10 @@ import pandas as pd
 net = Network() 
 
 net.add_layer(Layer("input", 30, None, None))
-net.add_layer(Layer("hidden", 15, sigmoid, sigmoid_prime))
-net.add_layer(Layer("output", 2, sigmoid, sigmoid_prime))
+net.add_layer(Layer("hidden", 64, sigmoid, sigmoid_prime))
+net.add_layer(Layer("hidden", 32, sigmoid, sigmoid_prime))
+net.add_layer(Layer("hidden", 16, sigmoid, sigmoid_prime))
+net.add_layer(Layer("output", 2, softmax, sigmoid_prime))
 
 for i, 	layer in enumerate(net.layers):
 	if layer.weights is None:
@@ -30,7 +32,7 @@ try:
 		Y_r = Y.reshape((1, 1))
 		training_data.append((X_r, Y_r))
 
-	net.fit(training_data, 1000, 10, 0.01)
+	net.fit(training_data, 2000, 10, 0.001)
 	net.save_model("model.pkl")
 
 except Exception as e:

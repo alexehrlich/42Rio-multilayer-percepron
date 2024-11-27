@@ -4,9 +4,7 @@ import pickle
 import pdb
 
 def softmax(input):
-	#print(input)
 	temp = np.exp(input - np.max(input))
-	#print(temp)
 	return temp / np.sum(temp)
 
 def sigmoid(z):
@@ -46,8 +44,6 @@ class Network:
 		#The output of the input layer is the input itself
 		self.layers[0].activations = input
 		for i in range(1, len(self.layers)):
-			print(f"i: {i}")
-			pdb.set_trace()
 			self.layers[i].forward(self.layers[i-1].activations)
 		return self.layers[-1].activations
 
@@ -74,24 +70,24 @@ class Network:
 				print("Epoch {0} complete".format(j))
 
 	def backpropagation(self, x, y):
-		batch_nabla_b = [np.zeros(layer.biases.shape) for layer in self.layers[1:]]
-		batch_nabla_w = [np.zeros(layer.weights.shape) for layer in self.layers[1:]]
+		temp_nabla_b = [np.zeros(layer.biases.shape) for layer in self.layers[1:]]
+		temp_nabla_w = [np.zeros(layer.weights.shape) for layer in self.layers[1:]]
 
 		net_out = self.feed_forward(x)
 
 		#calcualte the delta for the last layer derivative_crossentropy_softmax:
 		delta = net_out - y
 
-		self.layers[-1].nabla_b = delta
-		self.layers[-1].nabla_w = np.dot(delta, self.layers[-2].activations.transpose())
+		temp_nabla_b[-1] = delta
+		temp_nabla_w[-1] = np.dot(delta, self.layers[-2].activations.transpose())
 
 		for l in range(2, len(self.layers)):
 			z = self.layers[-l].z
 			sp = sigmoid_prime(z) #use the passed derivative later!!
 			delta = np.dot(self.layers[-l + 1].weights.transpose(), delta) * sp
-			self.layers[-l].nabla_b = delta
-			self.layers[-l].nabla_w = np.dot(delta, self.layers[-l-1].activations.transpose())
-		return (batch_nabla_b, batch_nabla_w)
+			temp_nabla_b[-l] = delta
+			temp_nabla_w[-l] = np.dot(delta, self.layers[-l-1].activations.transpose())
+		return (temp_nabla_b, temp_nabla_w)
 
 	def update_mini_batch(self, mini_batch, eta):
 		for x, y in mini_batch:

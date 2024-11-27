@@ -19,11 +19,19 @@ target_df_test = pd.read_csv("./csv/created/target_test.csv")
 X_test = features_df_test.to_numpy()
 Y_test = target_df_test.to_numpy()
 
+features_df_val = pd.read_csv("./csv/created/features_val.csv")
+target_df_val = pd.read_csv("./csv/created/target_val.csv")
+X_val = features_df_val.to_numpy()
+Y_val = target_df_val.to_numpy()
+
+X = np.concatenate((X_test, X_val))
+Y = np.concatenate((Y_test,Y_val))
+
 results = []
-total = len(X_test)
+total = len(X)
 right = 0
 wrong = 0
-for test, target in zip(X_test, Y_test):
+for test, target in zip(X, Y):
 	test_c = test.reshape(-1, 1)
 	out = net.feed_forward(test_c)
 	results.append(out)
@@ -36,6 +44,7 @@ for test, target in zip(X_test, Y_test):
 	else:
 		wrong += 1
 
+print(results)
 print(f"Total: {total}")
 print(f"Wrong: {wrong}, {wrong/total}")
 print(f"Right: {right}, {right/total}")
