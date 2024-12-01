@@ -34,7 +34,7 @@ try:
 	for X, Y in zip(X_val, Y_val):
 		validation_data.append((X.reshape((30, 1)), Y[0]))
 
-	net.fit(training_data, epochs=1000, eta=0.01, validation_data=validation_data)
+	net.fit(training_data, epochs=100, eta=0.01, validation_data=validation_data)
 	net.save_model("model.pkl")
 
 except Exception as e:

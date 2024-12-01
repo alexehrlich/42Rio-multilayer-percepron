@@ -87,11 +87,8 @@ class Network:
 		for features, label in data:
 			predicted = self.feed_forward(features)
 			result = np.argmax(predicted)
-			print(f"{label}, {result}")
 			if result == label:
 				right += 1
-		print(right)
-		pdb.set_trace()
 		return (f"{(right/len(data)*100):.2f}%")
 
 	def fit(self, training_data, epochs, eta, validation_data = None):
