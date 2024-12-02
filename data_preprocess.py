@@ -82,14 +82,19 @@ def preprocess_data(data):
 
 
 #Import the data. The CSV-dataset has no Header line
-df = pd.read_csv("./csv/data.csv", header=None)
-print("-----------Unprocessed data: ------------")
-print("Head: \n", df.head())
-print("Tail: \n", df.tail())
-print("Describe: \n", df.describe())
-print("---Count of target in data set---")
-print(df[1].value_counts())
-print("---------------------------------\n")
+try:
+	df = pd.read_csv("./csv/data.csv", header=None)
+	print("-----------Unprocessed data: ------------")
+	print("Head: \n", df.head())
+	print("Tail: \n", df.tail())
+	print("Describe: \n", df.describe())
+	print("---Count of target in data set---")
+	print(df[1].value_counts())
+	print("---------------------------------\n")
+
+except Exception as e:
+	print("Error:", str(e))
+	exit()
 
 #Preprocess the data:
 # Impute missing values with mean

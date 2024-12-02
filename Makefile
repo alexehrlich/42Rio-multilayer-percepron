@@ -19,3 +19,4 @@ clean:
 
 fclean: clean
 	rm -rf ./venv
+	rm model.pkl

@@ -36,5 +36,6 @@ try:
 	net.save_model("model.pkl")
 
 except Exception as e:
-	print(e.message)
+	print("Error: ", str(e))
+	print("Run <make preprocess_data> first")
 	exit()

@@ -25,3 +25,7 @@ class LayerNodeError(Exception):
 class NetArchitectureError(Exception):
 	def __init__(self):
 		self.message = "Network must have at least two hidden layers and only one input and only one output layer"
+
+class NoModelError(Exception):
+	def __init__(self):
+		self.message = "There is no model present. Run <make train> first"

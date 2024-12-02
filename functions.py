@@ -38,14 +38,10 @@ def categorial_cross_entropy_loss(predictions, targets):
 def derivative_crossentropy_softmax(layer_out, target_vec):
 	return layer_out - target_vec
 
-def binary_cross_entropy(target_vec, prediction_vec):
+def binary_cross_entropy(y_true, y_pred):
 	epsilon = 1e-15
-	predictions = np.clip(prediction_vec, epsilon, 1 - epsilon)
-	N = len(target_vec)
-	sum = 0
-	for i in range(len(target_vec)):
-		sum += target_vec[i][0] * math.log(predictions[i][1]) + (1 - target_vec[i][0]) * math.log(predictions[i][0])
-	return -sum/N
+	y_pred = np.clip(y_pred, epsilon, 1 - epsilon)  # Avoid log(0)
+	return - (y_true * np.log(y_pred[1]) + (1 - y_true) * np.log(y_pred[0]))
 
 func_deriv = {
 	None: None,

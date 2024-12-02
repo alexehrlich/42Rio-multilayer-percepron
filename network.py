@@ -5,6 +5,7 @@ import pickle
 from functions import func_deriv, categorial_cross_entropy_loss, softmax
 import random
 from exceptions import *
+import os
 
 
 class Network:
@@ -169,6 +170,9 @@ class Network:
 	
 	@staticmethod
 	def load_model(file_name):
+		if not os.path.exists(file_name):
+			raise NoModelError()
+			return
 		with open(file_name, 'rb') as f:
 			return pickle.load(f)
 
