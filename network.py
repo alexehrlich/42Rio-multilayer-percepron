@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import pickle
 from functions import func_deriv, categorial_cross_entropy_loss, softmax
@@ -162,7 +164,11 @@ class Network:
 		ax2.legend(loc='best')
 
 		plt.tight_layout()  # Adjust layout to avoid overlap
+		if not os.path.exists("./plots"):
+			os.makedirs("./plots")
+		plt.savefig('./plots/loss_accuracy_training.png')
 		plt.show()
+
 
 	def save_model(self, file_name):
 		with open(file_name, 'wb') as f:

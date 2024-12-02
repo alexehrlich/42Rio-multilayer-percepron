@@ -1,6 +1,8 @@
-import pandas as pd # type: ignore
-import matplotlib.pyplot as plt # type: ignore
-import numpy as np # type: ignore
+import pandas as pd
+import matplotlib
+matplotlib.use('Qt5Agg')
+import matplotlib.pyplot as plt
+import numpy as np
 import os
 import random
 
@@ -123,4 +125,7 @@ Y_test.to_csv('./csv/created/target_test.csv', index=False)
 #Plot a histogram
 plt.hist(df.iloc[:, 1], bins=2)
 plt.title("Distribution Target")
+if not os.path.exists("./plots"):
+	os.makedirs("./plots")
+plt.savefig('./plots/histogram_data.png')
 plt.show()
