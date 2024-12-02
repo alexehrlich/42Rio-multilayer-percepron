@@ -2,7 +2,7 @@ all: setup
 
 setup:
 	@echo "Installing the dependencies"
-	@virtualenv venv
+	@python3 -m virtualenv venv
 	@. venv/bin/activate && pip install -r ./requirements.txt
 
 preprocess_data:

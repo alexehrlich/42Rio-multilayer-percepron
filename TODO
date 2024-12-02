@@ -1,5 +1,3 @@
-- Calc Binary Cross Entropy in prediction
-
 - Implement mini batches:
 
 - check different weight inits like heUniform etc
