@@ -1,5 +1,3 @@
-- Calc Validation loss while training
-- calc validation accuracy in each epoch
 - Calc Binary Cross Entropy in prediction
 
 - Implement mini batches:
