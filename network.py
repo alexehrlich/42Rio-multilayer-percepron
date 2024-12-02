@@ -2,13 +2,41 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
-from functions import func_deriv, categorial_cross_entropy_loss
-import pdb
+from functions import func_deriv, categorial_cross_entropy_loss, softmax
 import random
+
+class DimensionError(Exception):
+	def __init__(self):
+		self.message = "Wrong Dimension of input vector"
+
+class EmptyNetworkError(Exception):
+	def __init__(self):
+		self.message = "Network has no layers."
+
+class LayerTypeError(Exception):
+	def __init__(self):
+		self.message = "Layer must be of type <input>, <hidden> or <output>"
+
+class InputLayerError(Exception):
+	def __init__(self):
+		self.message = "First layer must be of type <input>"
+
+class OutputLayerError(Exception):
+	def __init__(self):
+		self.message = "Last layer must be of type <output> with softmax activation"
+
+class LayerNodeError(Exception):
+	def __init__(self):
+		self.message = "Layer must have at least one node"
+
+class NetArchitectureError(Exception):
+	def __init__(self):
+		self.message = "Network must have at least two hidden layers and only one input and only one output layer"
 
 class Network:
 	def __init__(self):
 		self.layers = []
+		self.output_counter = 0
 
 	def add_layer(self, layer):
 		"""
@@ -19,6 +47,12 @@ class Network:
 			of the Cost with respect to the weights.
 			Seed used for reproducability.
 		"""
+		if not self.layers and layer.type != "input":
+			raise InputLayerError()
+		if self.layers and layer.type == "input":
+			raise NetArchitectureError()
+		if layer.type == "output":
+			self.output_counter += 1
 		self.layers.append(layer)
 		if layer.type != "input":
 			np.random.seed(39)
@@ -90,9 +124,18 @@ class Network:
 			if result == label:
 				right += 1
 		return (f"{(right/len(data)*100):.2f}%")
+	
+	def check_network(self):
+		num_layers = len(self.layers)
+		if num_layers == 0:
+			raise EmptyNetworkError()
+		if self.layers[-1].type != "output" or self.layers[-1].activation != softmax:
+			raise OutputLayerError()
+		if num_layers < 4 or self.output_counter > 1:
+			raise NetArchitectureError()
 
 	def fit(self, training_data, epochs, eta, validation_data = None):
-		#TODO: Check layer requirements
+		self.check_network()
 		loss_values = []
 		for epoch in np.arange(0, epochs):
 			loss = 0
@@ -133,6 +176,10 @@ class Layer:
 			The inpt is the activation vactor of the prev layer, which is needed
 			in the backpropagation.
 		"""
+		if (layer_type != "input" and layer_type != "hidden" and layer_type != "output"):
+			raise LayerTypeError()
+		if nodes < 1:
+			raise LayerNodeError()
 		self.type = layer_type
 		self.nodes = nodes
 		self.input = None

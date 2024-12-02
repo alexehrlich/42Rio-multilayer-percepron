@@ -4,17 +4,15 @@ import pandas as pd
 import pdb
 
 net = Network()
+try:
+	net.add_layer(Layer("input", 30, activation=None))
+	net.add_layer(Layer("hidden", 10, activation=ReLU))
+	net.add_layer(Layer("hidden", 16, activation=ReLU))
+	net.add_layer(Layer("output", 2, activation=softmax))
 
-net.add_layer(Layer("input", 30, activation=None))
-net.add_layer(Layer("hidden", 20, activation=ReLU))
-net.add_layer(Layer("hidden", 16, activation=ReLU))
-net.add_layer(Layer("output", 2, activation=softmax))
-
-for i, layer in enumerate(net.layers):
-	if layer.weights is None:
-		print(f"Input layer {i} has no weigths.")
-	else:
-		print(f"Shape of weights of layer {i}: {layer.weights.shape}\n")
+except Exception as e:
+	print(e.message)
+	exit()
 
 try:
 	features_df_train = pd.read_csv("./csv/created/features_train.csv")
@@ -39,3 +37,4 @@ try:
 
 except Exception as e:
 	print(e.message)
+	exit()
