@@ -4,34 +4,8 @@ import matplotlib.pyplot as plt
 import pickle
 from functions import func_deriv, categorial_cross_entropy_loss, softmax
 import random
+from exceptions import *
 
-class DimensionError(Exception):
-	def __init__(self):
-		self.message = "Wrong Dimension of input vector"
-
-class EmptyNetworkError(Exception):
-	def __init__(self):
-		self.message = "Network has no layers."
-
-class LayerTypeError(Exception):
-	def __init__(self):
-		self.message = "Layer must be of type <input>, <hidden> or <output>"
-
-class InputLayerError(Exception):
-	def __init__(self):
-		self.message = "First layer must be of type <input>"
-
-class OutputLayerError(Exception):
-	def __init__(self):
-		self.message = "Last layer must be of type <output> with softmax activation"
-
-class LayerNodeError(Exception):
-	def __init__(self):
-		self.message = "Layer must have at least one node"
-
-class NetArchitectureError(Exception):
-	def __init__(self):
-		self.message = "Network must have at least two hidden layers and only one input and only one output layer"
 
 class Network:
 	def __init__(self):
@@ -59,7 +33,7 @@ class Network:
 			layer.weights = np.random.randn(layer.nodes, self.layers[-2].nodes)
 			layer.nabla_w = np.zeros(layer.weights.shape)
 
-	def backpropagation(self, features, target):
+	def backpropagation(self, one_hot_target):
 		"""
 			Pass the delta backwards. The layer fills its nabla 
 			matrix with the gradients of the Cost with
@@ -68,14 +42,9 @@ class Network:
 			Entropy function with respect to the z of the last layer.
 			See math here: TODO.
 		"""
-		net_out = self.feed_forward(features)
-		one_hot_target = self.one_hot(target)
-		loss = categorial_cross_entropy_loss(net_out, one_hot_target)
-
 		delta = self.layers[-1].activations - one_hot_target
 		for layer in reversed(self.layers[1:]):
 			delta = layer.backward(delta)
-		return loss
 
 	def learn_parameter(self, eta):
 		"""
@@ -118,12 +87,16 @@ class Network:
 
 	def validate(self, data):
 		right = 0
+		validation_loss = 0
 		for features, label in data:
+			net_out = self.feed_forward(features)
+			one_hot_target = self.one_hot(label)
+			validation_loss += categorial_cross_entropy_loss(net_out, one_hot_target)
 			predicted = self.feed_forward(features)
 			result = np.argmax(predicted)
 			if result == label:
 				right += 1
-		return (f"{(right/len(data)*100):.2f}%")
+		return ((right/len(data)*100, validation_loss/len(data)))
 	
 	def check_network(self):
 		num_layers = len(self.layers)
@@ -135,27 +108,59 @@ class Network:
 			raise NetArchitectureError()
 
 	def fit(self, training_data, epochs, eta, validation_data = None):
+		train_len = len(training_data)
 		self.check_network()
-		loss_values = []
-		for epoch in np.arange(0, epochs):
-			loss = 0
+		print(f"X_train samples: {train_len}")
+		if validation_data:
+			print(f"X_val samples: {len(validation_data)}")
+		train_loss_values = []
+		val_loss_values = []
+		train_acc_values = []
+		val_acc_values = []
+		for epoch in np.arange(1, epochs + 1):
+			train_loss = 0
+			correct_train_prediction = 0
 			random.seed(42)
 			random.shuffle(training_data)
 			for features, target in training_data:
-				loss += self.backpropagation(features, target)
+				net_out = self.feed_forward(features)
+				one_hot_target = self.one_hot(target)
+				if np.argmax(net_out) == target:
+					correct_train_prediction += 1
+				train_loss += categorial_cross_entropy_loss(net_out, one_hot_target)
+				self.backpropagation(one_hot_target)
 				self.learn_parameter(eta)
 			#update the weights and biases with learn_parameter()
 			if validation_data:
-				print("Epoche - ", epoch, ", Training CCE-loss: ", loss, ", Valid Accuracy: ", self.validate(validation_data))
+				val_acc, val_loss = self.validate(validation_data)
+				val_loss_values.append(val_loss)
+				val_acc_values.append(val_acc)
+				print(f"Epoche: {epoch}/{epochs}, Training CCE loss: {train_loss/train_len}, Validation loss: {val_loss}")
 			else:
-				print("Epoche - ", epoch, ", Training CCE-loss: ", loss)
-			loss_values.append(loss)
+				print("Epoche - ", epoch, ", Training CCE-loss: ", train_loss/train_len)
+			train_loss_values.append(train_loss/train_len)
+			train_acc_values.append(correct_train_prediction/train_len * 100)
+
 		# Plot the loss over epochs
-		plt.plot(np.arange(0, epochs), loss_values, label='Loss')
-		plt.xlabel('Epochs')
-		plt.ylabel('Loss')
-		plt.title('Loss Over Epochs')
-		plt.legend()
+		fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+		# Plotting loss on the first subplot
+		ax1.plot(np.arange(1, epochs + 1), train_loss_values, label='Training Loss', color='blue')
+		ax1.plot(np.arange(1, epochs + 1), val_loss_values, label='Validation Loss', color='orange')
+		ax1.set_xlabel('Epochs')
+		ax1.set_ylabel('Loss')
+		ax1.set_title('Loss Over Epochs')
+		ax1.legend(loc='best')
+
+		# Plotting accuracy on the second subplot
+		ax2.plot(np.arange(1, epochs + 1), train_acc_values, label='Training Accuracy', color='green')
+		ax2.plot(np.arange(1, epochs + 1), val_acc_values, label='Validation Accuracy', color='red')
+		ax2.set_xlabel('Epochs')
+		ax2.set_ylabel('Accuracy (%)')
+		ax2.set_title('Accuracy Over Epochs')
+		ax2.legend(loc='best')
+
+		plt.tight_layout()  # Adjust layout to avoid overlap
 		plt.show()
 
 	def save_model(self, file_name):
