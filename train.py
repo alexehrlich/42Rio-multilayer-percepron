@@ -1,8 +1,9 @@
 from network import Network, Layer
-from functions import sigmoid, ReLU, softmax, xavier_initialization, he_initialization
+from functions import *
 import pandas as pd
 
-net = Network()
+net = Network(loss_function=categorial_cross_entropy_loss)
+
 try:
 	net.add_layer(Layer("input", 30, activation=None, weight_initialization=None))
 	net.add_layer(Layer("hidden", 20, activation=ReLU, weight_initialization=he_initialization))

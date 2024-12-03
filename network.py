@@ -4,16 +4,18 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import pickle
-from functions import func_deriv, categorial_cross_entropy_loss, softmax
+from functions import *
 import random
 from exceptions import *
 import os
 
 
 class Network:
-	def __init__(self):
+	def __init__(self, loss_function):
 		self.layers = []
 		self.output_counter = 0
+		self.loss_function = loss_function
+		self.loss_function_derivative = loss_deriv[loss_function]
 
 	def add_layer(self, layer):
 		"""
@@ -44,7 +46,10 @@ class Network:
 			Entropy function with respect to the z of the last layer.
 			See math here: TODO.
 		"""
-		delta = self.layers[-1].activations - one_hot_target
+		if self.loss_function = categorial_cross_entropy_loss:
+			delta = self.layers[-1].activations - one_hot_target
+		else:
+			delta = loss_function_derivative(self.layers[-1].activations, one_hot_target) * self.layers[-1].derivative_activation()
 		for layer in reversed(self.layers[1:]):
 			delta = layer.backward(delta)
 

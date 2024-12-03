@@ -10,7 +10,7 @@ def softmax(input):
 def sigmoid(z):
 	return 1.0/(1.0+np.exp(-z))
 
-def sigmoid_prime(z):
+def sigmoid_derivative(z):
 	return sigmoid(z)*(1-sigmoid(z))
 
 class DimensionError(Exception):
@@ -83,7 +83,7 @@ class Network:
 
 		for l in range(2, len(self.layers)):
 			z = self.layers[-l].z
-			sp = sigmoid_prime(z) #use the passed derivative later!!
+			sp = sigmoid_derivative(z) #use the passed derivative later!!
 			delta = np.dot(self.layers[-l + 1].weights.transpose(), delta) * sp
 			temp_nabla_b[-l] = delta
 			temp_nabla_w[-l] = np.dot(delta, self.layers[-l-1].activations.transpose())
