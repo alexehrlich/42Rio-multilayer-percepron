@@ -1,10 +1,8 @@
-- Implement mini batches:
-- check different weight inits like heUniform etc
+- Implement different loss functions
 
-- maybe make the output shape more felxible
-
-- understand Softmax
+understand Softmax
 - understand BCE nad CCE
+- understand a bit the different weight inits
 
 - write nice Readme with all the math
 - Document the math of Softmax + CCE --> see book notes

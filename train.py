@@ -1,13 +1,13 @@
 from network import Network, Layer
-from functions import sigmoid, ReLU, softmax
+from functions import sigmoid, ReLU, softmax, xavier_initialization, he_initialization
 import pandas as pd
 
 net = Network()
 try:
-	net.add_layer(Layer("input", 30, activation=None))
-	net.add_layer(Layer("hidden", 20, activation=ReLU))
-	net.add_layer(Layer("hidden", 16, activation=ReLU))
-	net.add_layer(Layer("output", 2, activation=softmax))
+	net.add_layer(Layer("input", 30, activation=None, weight_initialization=None))
+	net.add_layer(Layer("hidden", 20, activation=ReLU, weight_initialization=he_initialization))
+	net.add_layer(Layer("hidden", 16, activation=ReLU, weight_initialization=he_initialization))
+	net.add_layer(Layer("output", 2, activation=softmax, weight_initialization=he_initialization))
 
 except Exception as e:
 	print(e.message)
@@ -31,7 +31,9 @@ try:
 	for X, Y in zip(X_val, Y_val):
 		validation_data.append((X.reshape((30, 1)), Y[0]))
 
-	#net.fit(training_data, epochs=70, eta=0.01, validation_data=validation_data)
+	#Training data needs to be a list of tupels where each tuple is (column_vec of features, int of label).
+	# Example. Image of a nine: ([210, 255, 123, ...], 9)
+	# The label is used for hot encodig internally.
 	net.fit(training_data, epochs=100, eta=0.0001, validation_data=validation_data, batch_size=1)
 	net.save_model("model.pkl")
 

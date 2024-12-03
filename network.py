@@ -32,8 +32,7 @@ class Network:
 			self.output_counter += 1
 		self.layers.append(layer)
 		if layer.type != "input":
-			np.random.seed(39)
-			layer.weights = np.random.randn(layer.nodes, self.layers[-2].nodes)
+			layer.weight_initialization(layer, self.layers[-2].nodes)
 			layer.nabla_w = np.zeros(layer.weights.shape)
 
 	def backpropagation(self, one_hot_target):
@@ -196,7 +195,7 @@ class Network:
 			return pickle.load(f)
 
 class Layer:
-	def __init__(self, layer_type, nodes, activation):
+	def __init__(self, layer_type, nodes, activation, weight_initialization):
 		"""
 			Every derivative dC/dw_ij of the Cost with respect to the weights
 			is stored in a nabla matrix with the same shape as the weights matrix.
@@ -211,6 +210,7 @@ class Layer:
 		self.type = layer_type
 		self.nodes = nodes
 		self.input = None
+		self.weight_initialization = weight_initialization
 		self.activation = activation
 		self.derivative_activation = func_deriv[activation]
 		self.weights = None

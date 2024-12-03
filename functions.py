@@ -49,3 +49,12 @@ func_deriv = {
 	sigmoid: sigmoid_prime,
 	softmax: None
 }
+
+def he_initialization(layer, prev_layer_nodes):
+	np.random.seed(39)
+	layer.weights = np.random.randn(layer.nodes, prev_layer_nodes) * np.sqrt(2 / prev_layer_nodes)
+
+def xavier_initialization(layer, prev_layer_nodes):
+	np.random.seed(39)
+	limit = np.sqrt(6 / (layer.nodes + prev_layer_nodes))
+	layer.weights = np.random.uniform(-limit, limit, size=(layer.nodes, prev_layer_nodes))
