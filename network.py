@@ -141,7 +141,6 @@ class Network:
 		for epoch in range(1, epochs + 1):
 			train_loss = 0
 			correct_train_prediction = 0
-			random.seed(42)
 			random.shuffle(training_data)
 			mini_batches = self.create_mini_batches(training_data, batch_size)
 			for mini_batch in mini_batches:
