@@ -1,5 +1,4 @@
 - Implement mini batches:
-
 - check different weight inits like heUniform etc
 
 - maybe make the output shape more felxible

@@ -49,7 +49,7 @@ class Network:
 		for layer in reversed(self.layers[1:]):
 			delta = layer.backward(delta)
 
-	def learn_parameter(self, eta):
+	def learn_parameter(self, eta, batch_size):
 		"""
 			Update the weights matrix and bias vector with
 			Gradient descent. Change the weights/biases in 
@@ -57,8 +57,11 @@ class Network:
 			parameter (with the minus)
 		"""
 		for layer in self.layers[1:]:
-			layer.biases -= eta * layer.nabla_b
-			layer.weights -= eta * layer.nabla_w
+			layer.biases -= eta * (layer.nabla_b/batch_size)
+			layer.weights -= eta * (layer.nabla_w/batch_size)
+			#reset the nablas after accumulation and learing for the next batch
+			layer.nabla_b = np.zeros_like(layer.nabla_b)
+			layer.nabla_w = np.zeros_like(layer.nabla_w)
 
 	def feed_forward(self, input):
 		"""
@@ -81,12 +84,9 @@ class Network:
 			Encode the target value to make it
 			comparable to the networks output vector
 		"""
-		if y_train == 0:
-			return [[1], 
-					[0]]
-		elif y_train == 1:
-			return [[0],
-					[1]]
+		one_hot_vector = np.zeros((self.layers[-1].nodes, 1))
+		one_hot_vector[y_train] = 1
+		return one_hot_vector
 
 	def validate(self, data):
 		right = 0
@@ -110,7 +110,25 @@ class Network:
 		if num_layers < 4 or self.output_counter > 1:
 			raise NetArchitectureError()
 
-	def fit(self, training_data, epochs, eta, validation_data = None):
+	def create_mini_batches(self, training_data, batch_size):
+		return [training_data[k:k+batch_size] for k in range(0, len(training_data), batch_size)]
+
+	def learn_mini_batch(self, mini_btach, eta, batch_size):
+		batch_loss = 0
+		batch_correct_predictions = 0
+		for features, target in mini_btach:
+			net_out = self.feed_forward(features)
+			one_hot_target = self.one_hot(target)
+			if np.argmax(net_out) == target:
+				batch_correct_predictions += 1
+			batch_loss += categorial_cross_entropy_loss(net_out, one_hot_target)
+			self.backpropagation(one_hot_target)
+			self.learn_parameter(eta, batch_size)
+		return batch_loss, batch_correct_predictions
+
+	def fit(self, training_data, epochs, eta, validation_data = None, batch_size=1):
+		if batch_size < 1:
+			raise ValueError("Batch size ust be greater than 0.")
 		train_len = len(training_data)
 		self.check_network()
 		print(f"X_train samples: {train_len}")
@@ -120,20 +138,16 @@ class Network:
 		val_loss_values = []
 		train_acc_values = []
 		val_acc_values = []
-		for epoch in np.arange(1, epochs + 1):
+		for epoch in range(1, epochs + 1):
 			train_loss = 0
 			correct_train_prediction = 0
 			random.seed(42)
 			random.shuffle(training_data)
-			for features, target in training_data:
-				net_out = self.feed_forward(features)
-				one_hot_target = self.one_hot(target)
-				if np.argmax(net_out) == target:
-					correct_train_prediction += 1
-				train_loss += categorial_cross_entropy_loss(net_out, one_hot_target)
-				self.backpropagation(one_hot_target)
-				self.learn_parameter(eta)
-			#update the weights and biases with learn_parameter()
+			mini_batches = self.create_mini_batches(training_data, batch_size)
+			for mini_batch in mini_batches:
+				batch_loss, batch_correct_predictions = self.learn_mini_batch(mini_batch, eta, batch_size)
+				train_loss += batch_loss
+				correct_train_prediction += batch_correct_predictions
 			if validation_data:
 				val_acc, val_loss = self.validate(validation_data)
 				val_loss_values.append(val_loss)
@@ -229,8 +243,8 @@ class Layer:
 		else:
 			temp = delta
 
-		self.nabla_b = temp
-		self.nabla_w = np.dot(temp, self.input.T)
+		self.nabla_b += temp
+		self.nabla_w += np.dot(temp, self.input.T)
 
 		#passing as gradient to the previous layer
 		return np.dot(self.weights.T, temp)

@@ -32,10 +32,17 @@ try:
 		validation_data.append((X.reshape((30, 1)), Y[0]))
 
 	#net.fit(training_data, epochs=70, eta=0.01, validation_data=validation_data)
-	net.fit(training_data, epochs=200, eta=0.0001, validation_data=validation_data)
+	net.fit(training_data, epochs=100, eta=0.0001, validation_data=validation_data, batch_size=1)
 	net.save_model("model.pkl")
 
+except ValueError as ve:
+	print("Value Error:", str(ve))
+
+except FileNotFoundError as fnf:
+	print("Run <make preprocess_data> first.")
+
 except Exception as e:
-	print("Error: ", str(e))
-	print("Run <make preprocess_data> first")
+	print("An unexpected error occurred:", str(e))
+
+finally:
 	exit()
