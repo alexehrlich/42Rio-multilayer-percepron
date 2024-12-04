@@ -21,7 +21,7 @@ def softmax(input):
 def linear(input):
 	return input
 
-def linear_derivation(input)
+def linear_derivation(input):
 	return 1
 
 def categorial_cross_entropy_loss(predictions, targets):

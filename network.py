@@ -46,7 +46,7 @@ class Network:
 			Entropy function with respect to the z of the last layer.
 			See math here: TODO.
 		"""
-		if self.loss_function = categorial_cross_entropy_loss:
+		if self.loss_function == categorial_cross_entropy_loss:
 			delta = self.layers[-1].activations - one_hot_target
 		else:
 			delta = loss_function_derivative(self.layers[-1].activations, one_hot_target) * self.layers[-1].derivative_activation()
@@ -242,6 +242,7 @@ class Layer:
 	def backward(self, delta):
 		#Elementwise multiplication of the passed gradient from previous layer
 		# with the derivative of the activation function of that layer.
+		# For the output layer it was already calculated before backpropagation
 		if self.type != "output":
 			temp = np.multiply(delta, self.derivative_activation(self.z))
 		else:
