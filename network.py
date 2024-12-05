@@ -8,6 +8,7 @@ from functions import *
 import random
 from exceptions import *
 import os
+import pdb
 
 
 class Network:
@@ -37,7 +38,7 @@ class Network:
 			layer.weight_initialization(layer, self.layers[-2].nodes)
 			layer.nabla_w = np.zeros(layer.weights.shape)
 
-	def backpropagation(self, one_hot_target):
+	def backpropagation(self, target):
 		"""
 			Pass the delta backwards. The layer fills its nabla 
 			matrix with the gradients of the Cost with
@@ -47,9 +48,9 @@ class Network:
 			See math here: TODO.
 		"""
 		if self.loss_function == categorial_cross_entropy_loss:
-			delta = self.layers[-1].activations - one_hot_target #simplified version of CCE loss with softmax
+			delta = self.layers[-1].activations - one_hot(target, self.layers[-1].nodes) #simplified version of CCE loss with softmax
 		else:
-			delta = self.loss_function_derivative(self.layers[-1].activations, one_hot_target) * self.layers[-1].derivative_activation(self.layers[-1].z)
+			delta = self.loss_function_derivative(self.layers[-1].activations, target) * self.layers[-1].derivative_activation(self.layers[-1].z)
 		for layer in reversed(self.layers[1:]):
 			delta = layer.backward(delta)
 
@@ -83,22 +84,12 @@ class Network:
 			self.layers[i].forward(self.layers[i-1].activations)
 		return self.layers[-1].activations
 
-	def one_hot(self, y_train):
-		"""
-			Encode the target value to make it
-			comparable to the networks output vector
-		"""
-		one_hot_vector = np.zeros((self.layers[-1].nodes, 1))
-		one_hot_vector[y_train] = 1
-		return one_hot_vector
-
 	def validate(self, data):
 		right = 0
 		validation_loss = 0
 		for features, label in data:
 			net_out = self.feed_forward(features)
-			one_hot_target = self.one_hot(label)
-			validation_loss += categorial_cross_entropy_loss(net_out, one_hot_target)
+			validation_loss += self.loss_function(net_out, label)
 			predicted = self.feed_forward(features)
 			result = np.argmax(predicted)
 			if result == label:
@@ -109,7 +100,7 @@ class Network:
 		num_layers = len(self.layers)
 		if num_layers == 0:
 			raise EmptyNetworkError()
-		if self.layers[-1].type != "output" or self.layers[-1].activation != softmax:
+		if self.layers[-1].type != "output": #or self.layers[-1].activation != softmax:
 			raise OutputLayerError()
 		if num_layers < 4 or self.output_counter > 1:
 			raise NetArchitectureError()
@@ -122,11 +113,10 @@ class Network:
 		batch_correct_predictions = 0
 		for features, target in mini_btach:
 			net_out = self.feed_forward(features)
-			one_hot_target = self.one_hot(target)
-			if np.argmax(net_out) == target:
+			if self.loss_function == categorial_cross_entropy_loss and np.argmax(net_out) == target:
 				batch_correct_predictions += 1
-			batch_loss += categorial_cross_entropy_loss(net_out, one_hot_target)
-			self.backpropagation(one_hot_target)
+			batch_loss += self.loss_function(net_out, target)
+			self.backpropagation(target)
 			self.learn_parameter(eta, batch_size)
 		return batch_loss, batch_correct_predictions
 
@@ -166,7 +156,8 @@ class Network:
 
 		# Plotting loss on the first subplot
 		ax1.plot(np.arange(1, epochs + 1), train_loss_values, label='Training Loss', color='blue')
-		ax1.plot(np.arange(1, epochs + 1), val_loss_values, label='Validation Loss', color='orange')
+		if validation_data:
+			ax1.plot(np.arange(1, epochs + 1), val_loss_values, label='Validation Loss', color='orange')
 		ax1.set_xlabel('Epochs')
 		ax1.set_ylabel('Loss')
 		ax1.set_title('Loss Over Epochs')
@@ -174,7 +165,8 @@ class Network:
 
 		# Plotting accuracy on the second subplot
 		ax2.plot(np.arange(1, epochs + 1), train_acc_values, label='Training Accuracy', color='green')
-		ax2.plot(np.arange(1, epochs + 1), val_acc_values, label='Validation Accuracy', color='red')
+		if validation_data:
+			ax2.plot(np.arange(1, epochs + 1), val_acc_values, label='Validation Accuracy', color='red')
 		ax2.set_xlabel('Epochs')
 		ax2.set_ylabel('Accuracy (%)')
 		ax2.set_title('Accuracy Over Epochs')
@@ -195,7 +187,6 @@ class Network:
 	def load_model(file_name):
 		if not os.path.exists(file_name):
 			raise NoModelError()
-			return
 		with open(file_name, 'rb') as f:
 			return pickle.load(f)
 

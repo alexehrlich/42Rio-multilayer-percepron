@@ -24,8 +24,18 @@ def linear(input):
 def linear_derivation(input):
 	return 1
 
-def categorial_cross_entropy_loss(predictions, targets):
+def one_hot(label, nodes):
+	"""
+		Encode the target value to make it
+		comparable to the networks output vector
+	"""
+	one_hot_vector = np.zeros((nodes, 1))
+	one_hot_vector[label] = 1
+	return one_hot_vector
+
+def categorial_cross_entropy_loss(predictions, target):
 	# Ensure numerical stability by adding epsilon
+	one_hot_target = one_hot(target, len(predictions))
 	epsilon = 1e-15
 	predictions = np.clip(predictions, epsilon, 1 - epsilon)
 
@@ -33,7 +43,7 @@ def categorial_cross_entropy_loss(predictions, targets):
 	log_predictions = np.log(predictions)
 
 	# Element-wise multiplication of log_predictions and targets
-	temp = np.multiply(log_predictions, targets)
+	temp = np.multiply(log_predictions, one_hot_target)
 
 	# Calculate the cross-entropy loss
 	loss = -np.sum(temp)
@@ -48,7 +58,7 @@ def binary_cross_entropy(y_true, y_pred):
 	y_pred = np.clip(y_pred, epsilon, 1 - epsilon)  # Avoid log(0)
 	return - (y_true * np.log(y_pred[1]) + (1 - y_true) * np.log(y_pred[0]))
 
-def mse_loss(y_true, y_pred):
+def mse_loss(y_pred, y_true):
 	"""
 	Calculate the Mean Squared Error (MSE) loss.
 	
@@ -59,6 +69,8 @@ def mse_loss(y_true, y_pred):
 	Returns:
 		float: The MSE loss.
 	"""
+	#print("Y PRED: ", y_pred)
+	#print("Y True: ", y_true)
 	y_true = np.array(y_true)
 	y_pred = np.array(y_pred)
 	squared_errors = (y_true - y_pred) ** 2
@@ -77,10 +89,9 @@ def mse_derivative(y_true, y_pred):
 	"""
 	y_true = np.array(y_true)
 	y_pred = np.array(y_pred)
-	N = len(y_true)  # Number of samples
 	
 	# Compute the gradient
-	gradient = (1 / N) * (y_pred - y_true)
+	gradient = (y_pred - y_true)
 	return gradient
 
 
