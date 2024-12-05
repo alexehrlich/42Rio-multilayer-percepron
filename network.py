@@ -47,9 +47,9 @@ class Network:
 			See math here: TODO.
 		"""
 		if self.loss_function == categorial_cross_entropy_loss:
-			delta = self.layers[-1].activations - one_hot_target
+			delta = self.layers[-1].activations - one_hot_target #simplified version of CCE loss with softmax
 		else:
-			delta = loss_function_derivative(self.layers[-1].activations, one_hot_target) * self.layers[-1].derivative_activation()
+			delta = self.loss_function_derivative(self.layers[-1].activations, one_hot_target) * self.layers[-1].derivative_activation(self.layers[-1].z)
 		for layer in reversed(self.layers[1:]):
 			delta = layer.backward(delta)
 

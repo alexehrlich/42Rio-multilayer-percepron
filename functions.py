@@ -80,7 +80,7 @@ def mse_derivative(y_true, y_pred):
 	N = len(y_true)  # Number of samples
 	
 	# Compute the gradient
-	gradient = (2 / N) * (y_pred - y_true)
+	gradient = (1 / N) * (y_pred - y_true)
 	return gradient
 
 
