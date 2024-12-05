@@ -113,9 +113,14 @@ class Network:
 		batch_correct_predictions = 0
 		for features, target in mini_btach:
 			net_out = self.feed_forward(features)
+			print(f"Net out: {net_out}")
+			print(f"target: {target}")
+			if net_out == np.inf:
+				exit()
 			if self.loss_function == categorial_cross_entropy_loss and np.argmax(net_out) == target:
 				batch_correct_predictions += 1
 			batch_loss += self.loss_function(net_out, target)
+			print(f"Loss: {batch_loss}\n")
 			self.backpropagation(target)
 			self.learn_parameter(eta, batch_size)
 		return batch_loss, batch_correct_predictions
@@ -145,9 +150,9 @@ class Network:
 				val_acc, val_loss = self.validate(validation_data)
 				val_loss_values.append(val_loss)
 				val_acc_values.append(val_acc)
-				print(f"Epoche: {epoch}/{epochs}, Training CCE loss: {train_loss/train_len}, Validation loss: {val_loss}")
+				print(f"Epoche: {epoch}/{epochs}, Training loss: {train_loss/train_len}, Validation loss: {val_loss}")
 			else:
-				print("Epoche - ", epoch, ", Training CCE-loss: ", train_loss/train_len)
+				print("Epoche - ", epoch, ", Training loss: ", train_loss/train_len)
 			train_loss_values.append(train_loss/train_len)
 			train_acc_values.append(correct_train_prediction/train_len * 100)
 
