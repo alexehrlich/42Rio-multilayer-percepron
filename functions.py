@@ -33,7 +33,7 @@ def one_hot(label, nodes):
 	one_hot_vector[label] = 1
 	return one_hot_vector
 
-def categorial_cross_entropy_loss(predictions, target):
+def categorical_cross_entropy_loss(predictions, target):
 	# Ensure numerical stability by adding epsilon
 	one_hot_target = one_hot(target, len(predictions))
 	epsilon = 1e-15
@@ -104,7 +104,7 @@ func_deriv = {
 
 loss_deriv = {
 	mse_loss: mse_derivative,
-	categorial_cross_entropy_loss: derivative_crossentropy_softmax,
+	categorical_cross_entropy_loss: derivative_crossentropy_softmax,
 }
 
 def he_initialization(layer, prev_layer_nodes):

@@ -77,7 +77,7 @@ def preprocess_data(data):
 		#and here we subtract the mean. Now they are centered.
 		cleaned[i] = (cleaned[i] - mean)/std
 	
-	#Encode the categorial values M and B to 1 and 0
+	#Encode the categorical values M and B to 1 and 0
 	cleaned[1] = cleaned[1].map({'M': 1, 'B': 0})
 	
 	return cleaned

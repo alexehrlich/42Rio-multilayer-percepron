@@ -1,14 +1,13 @@
 import numpy as np
 import pandas as pd
-from network import Network, Layer
+from network import Model, Layer
 from functions import *
 
-# Initialize Network
-net = Network(loss_function=mse_loss)
+model = Model(model_type='linear')
 
 try:
-    net.add_layer(Layer("input", 1, activation=None, weight_initialization=None))
-    net.add_layer(Layer("output", 1, activation=linear, weight_initialization=he_initialization))
+    model.net.add_layer(Layer("input", 1, activation=None, weight_initialization=None))
+    model.net.add_layer(Layer("output", 1, activation=linear, weight_initialization=he_initialization))
 except Exception as e:
     print(e)
     exit()
@@ -29,7 +28,8 @@ for feature, target in zip(df['km_normalized'], df['price_normalized']):
 
 
 # Train the network
-net.fit(training_data, epochs=50, eta=0.01, validation_data=None, batch_size=1)
+model.fit(training_data, epochs=50, eta=0.01, validation_data=None, batch_size=1)
+model.plot_training()
 
 # Test feedforward with normalized input
 # Assume net_output is the output from the network
@@ -37,14 +37,14 @@ net.fit(training_data, epochs=50, eta=0.01, validation_data=None, batch_size=1)
 # Test normalization
 test_km = 74000
 test_km_normalized = (test_km - df['km'].mean()) / df['km'].std()
-net_output = net.feed_forward(np.array([[test_km_normalized]]))
+net_output = model.net.feed_forward(np.array([[test_km_normalized]]))
 
 # Denormalize using z-score normalization
 denormalized_output = (net_output * df['price'].std()) + df['price'].mean()
 print("Denormalized Output:", denormalized_output)
 
-print(f"Weight: {net.layers[-1].weights}")
-print(f"Bias: {net.layers[-1].biases}")
+print(f"Weight: {model.net.layers[-1].weights}")
+print(f"Bias: {model.net.layers[-1].biases}")
 
 
 # Optionally, save the model
