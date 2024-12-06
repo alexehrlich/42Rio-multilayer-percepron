@@ -88,8 +88,8 @@ class Model:
 			- If validation data is provided, calculate and store validation metrics.
 		"""
 		self.epochs = epochs
-		if batch_size < 1:
-			raise ValueError("Batch size must be greater than 0.")
+		if batch_size < 1 or eta < 0.0 or epochs < 0:
+			raise ValueError("Batch size, eta and epochs must be greater than 0.")
 
 		train_len = len(training_data)
 		self.check_network()
