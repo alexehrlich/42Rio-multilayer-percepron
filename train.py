@@ -1,4 +1,4 @@
-from network import Model, Network, Layer
+from model import Model, Network, Layer
 from functions import *
 import pandas as pd
 
@@ -9,6 +9,7 @@ try:
 	model.net.add_layer(Layer("hidden", 20, activation=ReLU, weight_initialization=he_initialization))
 	model.net.add_layer(Layer("hidden", 16, activation=ReLU, weight_initialization=he_initialization))
 	model.net.add_layer(Layer("output", 2, activation=softmax, weight_initialization=he_initialization))
+
 except Exception as e:
 	print(e.message)
 	exit()

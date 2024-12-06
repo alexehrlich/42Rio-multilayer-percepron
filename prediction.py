@@ -1,4 +1,4 @@
-from network import Network, Layer
+from model import Model
 import pandas as pd
 import math
 import numpy as np
@@ -6,7 +6,7 @@ from functions import binary_cross_entropy
 from exceptions import *
 
 try:
-	net = Network.load_model("model.pkl")
+	model = Model.load_model("model.pkl")
 except Exception as e:
 	print("Error:", e.message)
 	exit()
@@ -31,7 +31,7 @@ sample = 0
 for test, target in zip(X_test, Y_test):
 	sample += 1
 	test_c = test.reshape(-1, 1)
-	out = net.feed_forward(test_c)
+	out = model.predict(test_c)
 	results.append(out)
 	bce = binary_cross_entropy(target, out)
 	BCE_losses.append(bce)

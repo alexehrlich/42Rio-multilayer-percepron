@@ -8,7 +8,6 @@ from functions import *
 import random
 from exceptions import *
 import os
-import pdb
 
 class Model:
 	def __init__(self, model_type):
@@ -71,39 +70,65 @@ class Model:
 	def create_mini_batches(self, training_data, batch_size):
 		return [training_data[k:k+batch_size] for k in range(0, len(training_data), batch_size)]
 	
-	def fit(self, training_data, epochs, eta, validation_data = None, batch_size=1):
+	def fit(self, training_data, epochs, eta, validation_data=None, batch_size=1):
+		"""
+		Parameters:
+			training_data: List of tuples [(festures, label),...].
+			epochs (int): Number of epochs for training.
+			eta (float): Learning rate.
+			validation_data (list, optional): Validation dataset for evaluation.
+			batch_size (int, optional): Size of mini-batches (default is 1).
+
+		Process:
+		- Check network integrity and data.
+		- Train for the specified number of epochs:
+			- Shuffle and split training data into mini-batches.
+			- Perform training using `learn_mini_batch` for each batch.
+			- Calculate and store training loss and accuracy.
+			- If validation data is provided, calculate and store validation metrics.
+		"""
 		self.epochs = epochs
 		if batch_size < 1:
-			raise ValueError("Batch size ust be greater than 0.")
+			raise ValueError("Batch size must be greater than 0.")
+
 		train_len = len(training_data)
 		self.check_network()
 		print(f"X_train samples: {train_len}")
+
 		if validation_data:
 			print(f"X_val samples: {len(validation_data)}")
+
 		for epoch in range(1, epochs + 1):
 			train_loss = 0
 			correct_train_prediction = 0
 			random.shuffle(training_data)
+
 			for mini_batch in self.create_mini_batches(training_data, batch_size):
 				batch_loss, batch_correct_predictions = self.net.learn_mini_batch(mini_batch, eta, batch_size)
 				train_loss += batch_loss
 				correct_train_prediction += batch_correct_predictions
+
 			if validation_data:
 				self.has_validation_data = True
 				val_acc, val_loss = self.validate(validation_data)
 				self.val_loss_values.append(val_loss)
 				self.val_acc_values.append(val_acc)
-				print(f"Epoche: {epoch}/{epochs}, Training loss: {train_loss/train_len}, Validation loss: {val_loss}")
+				print(f"Epoch: {epoch}/{epochs}, Training loss: {train_loss/train_len}, Validation loss: {val_loss}")
 			else:
-				print("Epoche - ", epoch, ", Training loss: ", train_loss/train_len)
-			self.train_loss_values.append(train_loss/train_len)
-			self.train_acc_values.append(correct_train_prediction/train_len * 100)
+				print(f"Epoch: {epoch}/{epochs}, Training loss: {train_loss/train_len}")
+
+			self.train_loss_values.append(train_loss / train_len)
+			self.train_acc_values.append(correct_train_prediction / train_len * 100)
+
+
+	def predict(self, input):
+		return self.net.feed_forward(input)
 
 	def plot_training(self):
 		if self.type == 'multi-classifier':
 			fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 		elif self.type == 'linear':
-			fig, ax1 = plt.subplots(figsize=(14,6))
+			fig, ax1 = plt.subplots(figsize=(7,6))
 
 		x_range = np.arange(1, self.epochs + 1)
 		ax1.plot(x_range, self.train_loss_values, label='Training Loss', color='blue')
@@ -189,13 +214,12 @@ class Network:
 			Update the weights matrix and bias vector with
 			Gradient descent. Change the weights/biases in 
 			the opposite direction of the slope of that 
-			parameter (with the minus)
+			parameter (with the minus). After the update, the nablas
+			are reset to zero for the next batch.
 		"""
 		for layer in self.layers[1:]:
 			layer.biases -= eta * (layer.nabla_b/batch_size)
 			layer.weights -= eta * (layer.nabla_w/batch_size)
-
-			#reset the nablas after accumulation and learing for the next batch
 			layer.nabla_b = np.zeros_like(layer.nabla_b)
 			layer.nabla_w = np.zeros_like(layer.nabla_w)
 
@@ -213,10 +237,28 @@ class Network:
 			self.layers[i].forward(self.layers[i-1].activations)
 		return self.layers[-1].activations
 
-	def learn_mini_batch(self, mini_btach, eta, batch_size):
+	def learn_mini_batch(self, mini_batch, eta, batch_size):
+		"""
+		Perform a training step using a mini-batch.
+
+		Parameters:
+			mini_batch (list): Pairs of input features and target labels.
+			eta (float): Learning rate.
+			batch_size (int): Number of examples in the mini-batch.
+
+		Returns:
+			tuple: (batch_loss, batch_correct_predictions)
+				- batch_loss (float): Total loss for the mini-batch.
+				- batch_correct_predictions (int): Number of correct predictions.
+
+		Process:
+		- For each (features, target) pair, perform a forward pass to get predictions.
+		- Compute loss and check accuracy (if using categorical cross-entropy).
+		- Perform backpropagation and update parameters using gradients.
+		"""
 		batch_loss = 0
 		batch_correct_predictions = 0
-		for features, target in mini_btach:
+		for features, target in mini_batch:
 			net_out = self.feed_forward(features)
 			if self.loss_function == categorical_cross_entropy_loss and np.argmax(net_out) == target:
 				batch_correct_predictions += 1
@@ -225,7 +267,6 @@ class Network:
 			self.learn_parameter(eta, batch_size)
 		return batch_loss, batch_correct_predictions
 
-	
 
 class Layer:
 	def __init__(self, layer_type, nodes, activation, weight_initialization):
@@ -255,22 +296,39 @@ class Layer:
 
 	def forward(self, input):
 		"""
-			input are the activatons of the previous layer.
+			input are the activatons of the previous layer. 
+			The weighted sum z and the activations are stored
+			for later calculations.
 		"""
 		self.input = input
 		self.z = np.dot(self.weights, input) + self.biases
 		self.activations = self.activation(self.z)
 		return self.activations
 	
-	# TEMP = multiply the passed gradient with the derivative of the activation with the unactivated output of that layer
-	# TEMP is the derivative for the bias --> update the bias
-	# multiply TEMP by the input of that node, this is the derivative of the weight --> update the weight
-	# multiply TEMP by the OLD weight and return it --> Input for the next layer
-	# gradient is a vector with number_rows = number_nodes
+
 	def backward(self, delta):
-		#Elementwise multiplication of the passed gradient from previous layer
-		# with the derivative of the activation function of that layer.
-		# For the output layer it was already calculated before backpropagation
+		"""
+		Perform the backward pass for a layer, calculating gradients and propagating the error.
+
+		This method updates the accumulated gradients for the layer's biases and weights 
+		and computes the error signal to propagate to the previous layer.
+
+		Parameters:
+			delta (numpy array): The error signal from the next layer or the loss gradient.
+
+		Returns:
+			numpy array: The propagated error to pass to the previous layer.
+
+		The backward pass works as follows:
+		- For non-output layers, the error signal (delta) is multiplied element-wise 
+			by the derivative of the activation function applied to the pre-activation values (z).
+		- For the output layer, the raw delta is used without applying the activation derivative.
+			because it was alreday calculated in model.backprobagation before passing the error.
+		- The method accumulates gradients for the biases (`nabla_b`) and weights (`nabla_w`) 
+			using the error signal and the input values from the forward pass.
+		- Finally, the error signal is propagated backward by computing the dot product 
+			of the layer's weights (transposed) with the updated error signal.
+		"""
 		if self.type != "output":
 			temp = np.multiply(delta, self.derivative_activation(self.z))
 		else:
@@ -279,5 +337,5 @@ class Layer:
 		self.nabla_b += temp
 		self.nabla_w += np.dot(temp, self.input.T)
 
-		#passing as gradient to the previous layer
 		return np.dot(self.weights.T, temp)
+

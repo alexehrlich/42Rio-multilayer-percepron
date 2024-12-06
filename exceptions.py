@@ -29,3 +29,8 @@ class NoModelError(Exception):
 class ModelTypeError(Exception):
 	def __init__(self):
 		self.message = "Model type is not supported."
+
+class LossFunctionError(Exception):
+	def __init__(self, msg):
+		self.message = msg
+

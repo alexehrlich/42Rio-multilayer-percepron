@@ -1,9 +1,0 @@
-- Implement different loss functions
-
-understand Softmax
-- understand BCE nad CCE
-- understand a bit the different weight inits
-
-- write nice Readme with all the math
-- Document the math of Softmax + CCE --> see book notes
-
