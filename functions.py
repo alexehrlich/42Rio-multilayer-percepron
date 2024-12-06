@@ -89,6 +89,8 @@ def xavier_initialization(layer, prev_layer_nodes):
 def zero_initialization(layer, prev_layer_nodes):
 	layer.weights = np.zeros((layer.nodes, prev_layer_nodes))
 
+INITIALIZERS = [None, he_initialization, xavier_initialization, zero_initialization]
+
 # Mapping activation functions to their derivatives
 func_deriv = {
 	None: None,
@@ -98,7 +100,11 @@ func_deriv = {
 	softmax: None
 }
 
+ACTIVATIONS = [None, ReLU, sigmoid, linear, softmax]
+
 loss_deriv = {
 	mse_loss: mse_derivative,
 	categorical_cross_entropy_loss: derivative_crossentropy_softmax,
 }
+
+LOSS_FUNCTIONS = [mse_loss, categorical_cross_entropy_loss]

@@ -10,6 +10,10 @@ class ActivationFunctionError(Exception):
 	def __init__(self, msg):
 		self.message = msg
 
+class WeightInitError(Exception):
+	def __init__(self, msg):
+		self.message = msg
+
 class LayerNodeError(Exception):
 	def __init__(self):
 		self.message = "Layer must have at least one node"

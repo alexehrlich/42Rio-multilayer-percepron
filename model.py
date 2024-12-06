@@ -62,6 +62,8 @@ class Model:
 				raise LossFunctionError("Linear regression must have MSE loss function.")
 
 		elif self.type == "multi-classifier":
+			if len(self.net.layers) < 4:
+				raise NetArchitectureError("Minimum two hidden layers required.")
 			if self.net.layers[-1].activation not in [softmax, sigmoid]:
 				raise NetArchitectureError("Classification model requires softmax or sigmoid activation on the output layer.")
 			if self.net.loss_function != categorical_cross_entropy_loss:
@@ -281,6 +283,10 @@ class Layer:
 			raise LayerTypeError()
 		if nodes < 1:
 			raise LayerNodeError()
+		if activation not in ACTIVATIONS:
+			raise ActivationFunctionError("Activation function not supported.")
+		if weight_initialization not in INITIALIZERS:
+			raise WeightInitError("Weight initializer not supported.")
 		self.type = layer_type
 		self.nodes = nodes
 		self.input = None
