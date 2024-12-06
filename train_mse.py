@@ -16,22 +16,36 @@ except Exception as e:
 # Load data
 df = pd.read_csv("./csv/car_data.csv")
 
-# Normalize features (km) and target (price)
-df['km_normalized'] = (df['km'] - df['km'].min()) / (df['km'].max() - df['km'].min())
-df['price_normalized'] = (df['price'] - df['price'].min()) / (df['price'].max() - df['price'].min())
+# Normalize features (km) and target (price) using z-score normalization
+df['km_normalized'] = (df['km'] - df['km'].mean()) / df['km'].std()
+df['price_normalized'] = (df['price'] - df['price'].mean()) / df['price'].std()
 
-print(df)
+print("Normalized DataFrame:\n", df)
+
 # Prepare training data
 training_data = []
 for feature, target in zip(df['km_normalized'], df['price_normalized']):
     training_data.append((np.array([[feature]]), target))
 
-# Feed forward a normalized value for testing
-normalized_input = (2000 - df['km'].min()) / (df['km'].max() - df['km'].min())
-print("Net out: ", net.feed_forward(np.array([[normalized_input]])))
 
 # Train the network
-net.fit(training_data, epochs=20, eta=0.00001, validation_data=None, batch_size=1)
+net.fit(training_data, epochs=50, eta=0.01, validation_data=None, batch_size=1)
+
+# Test feedforward with normalized input
+# Assume net_output is the output from the network
+# Small test for preprocessing
+# Test normalization
+test_km = 74000
+test_km_normalized = (test_km - df['km'].mean()) / df['km'].std()
+net_output = net.feed_forward(np.array([[test_km_normalized]]))
+
+# Denormalize using z-score normalization
+denormalized_output = (net_output * df['price'].std()) + df['price'].mean()
+print("Denormalized Output:", denormalized_output)
+
+print(f"Weight: {net.layers[-1].weights}")
+print(f"Bias: {net.layers[-1].biases}")
+
 
 # Optionally, save the model
 # net.save_model("model.pkl")

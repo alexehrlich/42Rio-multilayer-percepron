@@ -102,8 +102,8 @@ class Network:
 			raise EmptyNetworkError()
 		if self.layers[-1].type != "output": #or self.layers[-1].activation != softmax:
 			raise OutputLayerError()
-		if num_layers < 4 or self.output_counter > 1:
-			raise NetArchitectureError()
+		#if num_layers < 4 or self.output_counter > 1:
+			#raise NetArchitectureError()
 
 	def create_mini_batches(self, training_data, batch_size):
 		return [training_data[k:k+batch_size] for k in range(0, len(training_data), batch_size)]
@@ -113,14 +113,9 @@ class Network:
 		batch_correct_predictions = 0
 		for features, target in mini_btach:
 			net_out = self.feed_forward(features)
-			print(f"Net out: {net_out}")
-			print(f"target: {target}")
-			if net_out == np.inf:
-				exit()
 			if self.loss_function == categorial_cross_entropy_loss and np.argmax(net_out) == target:
 				batch_correct_predictions += 1
 			batch_loss += self.loss_function(net_out, target)
-			print(f"Loss: {batch_loss}\n")
 			self.backpropagation(target)
 			self.learn_parameter(eta, batch_size)
 		return batch_loss, batch_correct_predictions

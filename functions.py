@@ -69,14 +69,12 @@ def mse_loss(y_pred, y_true):
 	Returns:
 		float: The MSE loss.
 	"""
-	#print("Y PRED: ", y_pred)
-	#print("Y True: ", y_true)
 	y_true = np.array(y_true)
 	y_pred = np.array(y_pred)
 	squared_errors = (y_true - y_pred) ** 2
 	return 0.5 * np.mean(squared_errors)
 
-def mse_derivative(y_true, y_pred):
+def mse_derivative(y_pred, y_true):
 	"""
 	Compute the derivative of the MSE loss with respect to the predictions.
 	
@@ -117,3 +115,6 @@ def xavier_initialization(layer, prev_layer_nodes):
 	np.random.seed(39)
 	limit = np.sqrt(6 / (layer.nodes + prev_layer_nodes))
 	layer.weights = np.random.uniform(-limit, limit, size=(layer.nodes, prev_layer_nodes))
+
+def zero_initialization(layer, prev_layer_nodes):
+	layer.weights = np.zeros((layer.nodes, prev_layer_nodes))

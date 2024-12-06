@@ -11,6 +11,9 @@ preprocess_data:
 train:
 	@. venv/bin/activate && python3 train.py
 
+train_mse:
+	@. venv/bin/activate && python3 train_mse.py
+
 prediction:
 	@. venv/bin/activate && python3 prediction.py
 
