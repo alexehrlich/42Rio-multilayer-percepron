@@ -4,34 +4,24 @@ This project is about coding a neural network from scratch to classify breast ca
 ## Usage
 
 1. Run `make setup` to install all the dependencies in a virtualenv.
-2. Run `make preprocess_data`. It installs the necessary dependencies in the venv. The training result is safed to a seperate `model` file. The program also plots the data, the normalized data and the cost function.
-  ![lin_reg1](https://raw.githubusercontent.com/alexehrlich/42Rio-AI-ft_linear_regression/main/images/plots.png)
-4. Run `cat model` to see the model with the timestamp.
-5. Run `make prediction`. It reads the file and asks you for a milage to estimate a price. 'exit' ends the program.
+2. Run `make preprocess_data` to split the data set in train, validation and test subsets giving a desired ratio.
+4. Run `make train_classifier` to train the multilayer neural network based on the breast cancer data with the test and avalidation set from preprocessing.
+5. Run `make train_car_linreg` to train a single input output neural network to realize the linear regresssion model from ft_linear_regresssion with a neural network
+6. Run `make prediction` to use the test data set from preprocessing to test the classifier with unseen data.
 
-## Training the model with gradient descent
+## Neural Networks
 
-When training a linear regression model, the goal is to find the regression line that best fits the given training data. This means minimizing the sum of the squared errors, which is known as the cost. Different regression lines will yield different costs, as the cost function depends on both the intercept $Θ_0$ and the slope $Θ_1$.
+- What is a perceptron?
+- Neural network strucutre with weights and biases? LEave space to add image
+- Matrix and vector representation and forward pass? LEave space to add image
+- loss functions
+  
+## Backpropagation
+- Why?
+- What?
 
-The cost function sums up the squares of the difference of the acutal data and the estimated price:
-
-![lin_reg1](https://raw.githubusercontent.com/alexehrlich/42Rio-AI-ft_linear_regression/main/images/formulas.png)
-
-The objective is to find the values of $Θ_0$ and $Θ_1$ that minimize this cost function. In other words finding the tangent of the cost function being close to 0. By doing so, we ensure that the regression line we obtain is the one that best fits the training data, resulting in the smallest possible sum of squared errors. This can be visualized as follows:
-
-![lin_reg1](https://raw.githubusercontent.com/alexehrlich/42Rio-AI-ft_linear_regression/main/images/cost.png)
-
-Finding the best values for $Θ_0$ and $Θ_1$ can be done with the gradient descent algorithm. To calculate the tangent for the different values for $Θ_0$ and $Θ_1$ we have to do partial derivation of the cost dunction with respect to $Θ_0$ and $Θ_1$ - the so called gradients. Applying the chain rule we get those formulas for the gradients:
-
-![lin_reg1](https://raw.githubusercontent.com/alexehrlich/42Rio-AI-ft_linear_regression/main/images/gradients.png)
-
-The algorithm works like this:
-1. Set $Θ_0$ and $Θ_1$ to a random value, in our case to 0.
-3. Define the learning rate $η$. It defines which step size we apply to the $Θ_0$ and $Θ_1$ to update them during the learning process.
-4. Define a threshold for a satisfying convergence and a max iteration limit to stop the algorithm.
-5. Compute the current gradients with the formulas from above. (Looks harder than it actually is :) )
-6. If both gradients meet the hit the threshold or the iteration limit is reached -> Return $Θ_0$ and $Θ_1$ and denormalizethem. Your done :)
-7. Else: Update $Θ_0$ and $Θ_1$ with the step size. The step size is the product of the current gradient and the learning rate. Repeat from step 4.
+## Proof of Softmax in combination with categorical cross entropy loss
+- Calculations here
 
 
 
