@@ -12,7 +12,7 @@ def train_val_test_split(data, train_ratio=0.8, validation_ratio=0.1, test_ratio
 		return
 
 	shuffeld_df = data.copy()
-	shuffeld_df = shuffeld_df.sample(frac=1, random_state=42).reset_index(drop=True)
+	shuffeld_df = shuffeld_df.sample(frac=1, random_state=2).reset_index(drop=True)
 
 	data_len = len(data)
 	train_len = int(data_len * train_ratio)
@@ -85,14 +85,42 @@ def preprocess_data(data):
 
 #Import the data. The CSV-dataset has no Header line
 try:
+	# Load the dataset
 	df = pd.read_csv("./csv/data.csv", header=None)
 	print("-----------Unprocessed data: ------------")
 	print("Head: \n", df.head())
 	print("Tail: \n", df.tail())
 	print("Describe: \n", df.describe())
 	print("---Count of target in data set---")
-	print(df[1].value_counts())
+	print(df.iloc[:, -1].value_counts())  # Assuming the target is the last column
 	print("---------------------------------\n")
+
+
+	# Select features (exclude the first 2 columns)
+	num_features = 30
+	features = df.iloc[:, 2:2 + num_features]
+
+	# Create a dictionary to store outliers for each feature
+	outliers = {}
+
+	# Loop through each feature and identify outliers
+	for feature in features.columns:
+		Q1 = features[feature].quantile(0.25)  # First quartile
+		Q3 = features[feature].quantile(0.75)  # Third quartile
+		IQR = Q3 - Q1  # Interquartile range
+
+		lower_bound = Q1 - 1.5 * IQR
+		upper_bound = Q3 + 1.5 * IQR
+
+		# Identify outliers
+		outliers[feature] = features[(features[feature] < lower_bound) | (features[feature] > upper_bound)][feature]
+
+	# Print the outliers for each feature
+	for feature, outlier_values in outliers.items():
+		print(f"Feature {feature}:")
+		print(outlier_values)
+		print("-----------")
+
 
 except Exception as e:
 	print("Error:", str(e))
