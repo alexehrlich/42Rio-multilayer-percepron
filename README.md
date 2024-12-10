@@ -1,5 +1,5 @@
 
-# Multilayer Perceptron
+# Multilayer Perceptron (in progress)
 
 This project demonstrates the implementation of a neural network from scratch to classify breast cancer data as benign or malignant. The model employs backpropagation and gradient descent for training, based on a real [data set](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) provided by the University of Wisconsin.
 
