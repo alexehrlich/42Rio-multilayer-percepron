@@ -1,12 +1,13 @@
 # Multilayer Perceptron
 This project is about coding a neural network from scratch to classify breast cancer data to be benign or malignant using backpropagation and gradient descent based on a real [data set](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) provided by the University of Wisconsin.
 
-## Preparing the training data
+## Usage
 
-Since the price and the milage values differ immensly in their range, it is necessary to normalize the data to acheive stable and faster convergence of the gradient descent algorithm used later. There are many ways to do that. Two of them are: 
-- The Min-Max-Normaliztion is the most intuitive. It maps the values inbetween [0, 1]. Though it is not very good in handling outliers.
-- The Z-Score-Normalization shifts the mean of the data set to 0 and the standard deviation to 1.
-Some research showd that the Z-Score-Normalization is fits the best for gradient descent.
+1. Run `make setup` to install all the dependencies in a virtualenv.
+2. Run `make preprocess_data`. It installs the necessary dependencies in the venv. The training result is safed to a seperate `model` file. The program also plots the data, the normalized data and the cost function.
+  ![lin_reg1](https://raw.githubusercontent.com/alexehrlich/42Rio-AI-ft_linear_regression/main/images/plots.png)
+4. Run `cat model` to see the model with the timestamp.
+5. Run `make prediction`. It reads the file and asks you for a milage to estimate a price. 'exit' ends the program.
 
 ## Training the model with gradient descent
 
@@ -33,13 +34,7 @@ The algorithm works like this:
 7. Else: Update $Θ_0$ and $Θ_1$ with the step size. The step size is the product of the current gradient and the learning rate. Repeat from step 4.
 
 
-## Usage
 
-1. Run `make setup` to install all the dependencies in a virtualenv.
-2. Run `make training`. It installs the necessary dependencies in the venv. The training result is safed to a seperate `model` file. The program also plots the data, the normalized data and the cost function.
-  ![lin_reg1](https://raw.githubusercontent.com/alexehrlich/42Rio-AI-ft_linear_regression/main/images/plots.png)
-4. Run `cat model` to see the model with the timestamp.
-5. Run `make prediction`. It reads the file and asks you for a milage to estimate a price. 'exit' ends the program.
 
 ## Resources
 
