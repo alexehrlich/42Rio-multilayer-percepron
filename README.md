@@ -9,9 +9,10 @@ It contains the following stpes:
 
 
 ## Preprocessing
-The dataset has a slight imbalance of the B and M classes with ratio of 2:1, which is acceptable. No methods like oversampling or undersampling where applied. The subsets remain roughly the same class distribution.
+The dataset has a slight imbalance of the B and M classes with ratio of 2:1, which is acceptable. No methods like oversampling or undersampling where applied. The subsets remain roughly the same class distribution. 
 
-`---Result of data set split: ---
+```python
+---Result of data set split: ---
 Train class distribution
         Total: 455
         B(0): 286 (62.9%)
@@ -25,13 +26,13 @@ Validation class distribution
 Test class distribution
         Total: 58
         B(0): 34 (58.6%)
-        M(1): 24 (41.4%)`
+        M(1): 24 (41.4%)
 
 ## Training
 The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. 
 
 ### General network architecture
-This image shows the general data flow from an input vector through the matrices (tensors) of the neural network. 
+This image shows the general data flow from an input vector through the matrices (tensors) of the neural network. The connection from one layer to the next can be represented in a matrix because the input of node is the sum of the products of all nodes with their own weight. The bias of a layer can be represented be a simple column vecotr.
 
 ![tensor_flow](./img/layer_flow.jpg) 
 
