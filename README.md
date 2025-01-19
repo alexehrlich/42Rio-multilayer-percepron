@@ -11,8 +11,34 @@ It contains the following stpes:
 ## Preprocessing
 The dataset has a slight imbalance of the B and M classes with ratio of 2:1, which is acceptable. No methods like oversampling or undersampling where applied. The subsets remain roughly the same class distribution.
 
+`---Result of data set split: ---
+Train class distribution
+        Total: 455
+        B(0): 286 (62.9%)
+        M(1): 169 (37.1%)
+
+Validation class distribution
+        Total: 56
+        B(0): 37 (66.1%)
+        M(1): 19 (33.9%)
+
+Test class distribution
+        Total: 58
+        B(0): 34 (58.6%)
+        M(1): 24 (41.4%)`
+
 ## Training
-The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning.
+The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. This image shows the general data flow from an input vector through the matrices (tensors) of the neural network. 
+
+![tensor_flow](./img/layer_flow.jpg) 
+
+With result of the forward pass and the current values of all network parameters (weights and biases) we can calculate how good or bad the result is since we know the label of the passed data from our training dataset. This is done by using a Cost function (See later). We then want to find out how **every** parameter is affecting the cost. Since we want the minimal Cost for the best prediction we need to minimize it. Since the cost depends on every parameter, we need to find the **partial derivative** of the cost function with respect to every parameter in the network. With the partial derivatives we can use gradient descent to make a step towards the optimun as described here.
+
+### Backpropagation
+
+### Gradient descent
+
+### Cost functions
 
 ## Usage
 
