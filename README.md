@@ -41,7 +41,7 @@ With result of the forward pass and the current values of all network parameters
 
 ### Backpropagation
 With backpropagation we can calculate every derivative of the cost function with respect to all the network parameters. With the derivative we can tweak every parameter with gradient descent. The following shows a simple one dimensional network and how to calculate the partial derivate of the cost function with respect to the parameters of the first layer. That way the error is ***backpropageted** through the net. It turns out that we can mulitply the error by the transposed matrix and then by the derivative of the acitvation function in order to send the error back through the network.
-![backprop](./img/backprop.jpg)
+![backprop](./img/backprop.png)
 
 ### Gradient descent
 
