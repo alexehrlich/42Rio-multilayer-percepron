@@ -1,43 +1,22 @@
 
 # Multilayer Perceptron (in progress)
 
-This project demonstrates the implementation of a neural network from scratch to classify breast cancer data as benign or malignant. The model employs backpropagation and gradient descent for training, based on a real [data set](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) provided by the University of Wisconsin.
+This project demonstrates the implementation of a neural network from scratch **without** any fancy ML libary to classify breast cancer data as benign or malignant. The training is based on a real [data set](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) provided by the University of Wisconsin.
+It contains the following stpes:
+- Data Preprocessing: Cleaning and Normalization
+- Data Splitting: Split the Data into 3 substes of **train** and **validation** for the training process and **test** for testing the prediction
+- Training: Tweak the parameters with Backpropagatio and gradient descent
 
----
+
+## Preprocessing
+The dataset has a slight imbalance of the B and M classes with ratio of 2:1, which is acceptable. No methods like oversampling or undersampling where applied. The subsets remain roughly the same class distribution.
+
+## Training
+The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning.
 
 ## Usage
 
-1. **Setup**  
-   Run the following command to create a virtual environment and install all the required dependencies:
-   ```bash
-   make setup
-   ```
 
-2. **Preprocess Data**  
-   Split the dataset into training, validation, and test subsets with a specified ratio:
-   ```bash
-   make preprocess_data
-   ```
-
-3. **Train the Classifier**  
-   Train the multilayer neural network for classifying breast cancer data:
-   ```bash
-   make train_classifier
-   ```
-
-4. **Train for Linear Regression**  
-   Train a simple neural network for a single-input single-output linear regression model:
-   ```bash
-   make train_car_linreg
-   ```
-
-5. **Make Predictions**  
-   Use the test dataset to evaluate the trained classifier on unseen data:
-   ```bash
-   make prediction
-   ```
-
----
 
 ## Neural Networks
 
