@@ -28,7 +28,10 @@ Test class distribution
         M(1): 24 (41.4%)`
 
 ## Training
-The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. This image shows the general data flow from an input vector through the matrices (tensors) of the neural network. 
+The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. 
+
+### General network architecture
+This image shows the general data flow from an input vector through the matrices (tensors) of the neural network. 
 
 ![tensor_flow](./img/layer_flow.jpg) 
 
