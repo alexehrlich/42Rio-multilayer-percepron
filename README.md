@@ -5,7 +5,8 @@ This project demonstrates the implementation of a neural network from scratch **
 It contains the following stpes:
 - Data Preprocessing: Cleaning and Normalization
 - Data Splitting: Split the Data into 3 substes of **train** and **validation** for the training process and **test** for testing the prediction
-- Training: Tweak the parameters with Backpropagatio and gradient descent
+- Training: Tweak the parameters with ackpropagation and gradient descent
+- Prediction: Uses the test dataset to test the network
 
 ***What is a Perceptron?***
 A perceptron is a fundamental unit of a neural network. It mimics a biological neuron, receiving inputs, applying weights, summing them, and passing the result through an activation function.
