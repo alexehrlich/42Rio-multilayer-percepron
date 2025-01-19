@@ -68,16 +68,16 @@ Some common cost functions include:
 By minimizing the cost function during training, the model learns to make better predictions. Gradient descent and its variants are often employed to achieve this by iteratively updating model parameters.
 
 ## Usage
-`make setup` to install dependencies
-`make preprocess_data` to clean and normalize the data set
-`make train_classifier` to train the neural network with the train and validation subset
-`make prediction` to take the test subset and test the data
+- `make setup` to install dependencies
+- `make preprocess_data` to clean and normalize the data set
+- `make train_classifier` to train the neural network with the train and validation subset
+- `make prediction` to take the test subset and test the data
 
 
 ## Resources
 
 - [Neural networks and deep learning](http://neuralnetworksanddeeplearning.com)
-- [Gradient Descent, Step by Step (YouTube)]([https://www.youtube.com/watch?v=sDv4f4s2SB8](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.youtube.com/playlist%3Flist%3DPLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1&ved=2ahUKEwjO9O-8vIGLAxVrXfEDHeycIhcQFnoECB0QAQ&usg=AOvVaw1-u2IIZQvYATQYMHEhaCWT))
+- [Gradient Descent, Step by Step (YouTube)](https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.youtube.com/playlist%3Flist%3DPLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1&ved=2ahUKEwjO9O-8vIGLAxVrXfEDHeycIhcQFnoECB0QAQ&usg=AOvVaw1-u2IIZQvYATQYMHEhaCWT)
   
 
 
