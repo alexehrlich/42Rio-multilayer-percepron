@@ -68,6 +68,9 @@ Some common cost functions include:
 
 By minimizing the cost function during training, the model learns to make better predictions. Gradient descent and its variants are often employed to achieve this by iteratively updating model parameters.
 
+### Special case: softmax output layer and Categorical Cross Entropy Loss function
+This is a common combination and there is a buty behind it to end up being a simple equation. [This video](https://www.youtube.com/watch?v=znqbtL0fRA0&pp=ygUeY3Jvc3MgZW50cm9weSBsb3NzIGFuZCBzb2Z0bWF4) explains the mathematical proof extremely good.
+
 ## Usage
 - `make setup` to install dependencies
 - `make preprocess_data` to clean and normalize the data set
