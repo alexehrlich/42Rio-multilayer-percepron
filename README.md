@@ -27,6 +27,7 @@ Test class distribution
         Total: 58
         B(0): 34 (58.6%)
         M(1): 24 (41.4%)
+```
 
 ## Training
 The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. 
