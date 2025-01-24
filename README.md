@@ -1,17 +1,18 @@
 
 # Multilayer Perceptron
 
-This project demonstrates the implementation of a neural network from scratch **without** any fancy ML libary to classify breast cancer data as benign or malignant. The training is based on a real [data set](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) provided by the University of Wisconsin.
-It contains the following stpes:
-- Data Preprocessing: Cleaning and Normalization
-- Data Splitting: Split the Data into 3 substes of **train** and **validation** for the training process and **test** for testing the prediction
-- Training: Tweak the parameters with ackpropagation and gradient descent
-- Prediction: Uses the test dataset to test the network
+This project demonstrates the implementation of a neural network from scratch **without** any fancy ML libary. It can be trained on any kind of multidimensional data to perform multiclass classification or linear regression. See the basic theory below as well as the two example usages where the neural network was trained
+- to classify breast cancer data as benign or malignant. The training is based on a real [data set](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) provided by the University of Wisconsin.
+- to classify handwritten digits. The training is based on the MNIST dataset
 
-***What is a Perceptron?***
-A perceptron is a fundamental unit of a neural network. It mimics a biological neuron, receiving inputs, applying weights, summing them, and passing the result through an activation function.
+`make setup` to install all dependencies
 
-## Preprocessing
+## Cancer classification
+- `make canc_preprocess_data`: Cleaning and Normalization of the data. Split the Data into 3 substes of **train** and **validation** for the training process and **test** for testing the prediction
+- `make canc_train_classifier`: Train the model with the self written neural_network module
+- `make canc_predict_probe`: Run the test data through the net and evaluate its performance
+
+### Preprocessing
 The dataset has a slight imbalance of the B and M classes with ratio of 2:1, which is acceptable. No methods like oversampling or undersampling where applied. The subsets remain roughly the same class distribution. 
 
 ```python
@@ -31,6 +32,14 @@ Test class distribution
         B(0): 34 (58.6%)
         M(1): 24 (41.4%)
 ```
+
+## Digit classification
+- 
+- `make mnist_train_classifier`: Loads the the data from the raw file wihtout any libary to train the model with the MNIST data set
+- `make mnist_predict_probe`: Draw a digit in pygame. Press 'S' to predict the drawing. Press 'D' to clear the canvas. 
+
+## What is a Perceptron?***
+A perceptron is a fundamental unit of a neural network. It mimics a biological neuron, receiving inputs, applying weights, summing them, and passing the result through an activation function.
 
 ## Training
 The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. 
@@ -70,12 +79,6 @@ By minimizing the cost function during training, the model learns to make better
 
 ### Special case: softmax output layer and Categorical Cross Entropy Loss function
 This is a common combination and there is a buty behind it to end up being a simple equation. [This video](https://www.youtube.com/watch?v=znqbtL0fRA0&pp=ygUeY3Jvc3MgZW50cm9weSBsb3NzIGFuZCBzb2Z0bWF4) explains the mathematical proof extremely good.
-
-## Usage
-- `make setup` to install dependencies
-- `make preprocess_data` to clean and normalize the data set
-- `make train_classifier` to train the neural network with the train and validation subset
-- `make prediction` to take the test subset and test the data
 
 
 ## Resources
