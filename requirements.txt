@@ -2,3 +2,5 @@ pandas
 numpy
 matplotlib
 PyQt5
+pygame
+pillow

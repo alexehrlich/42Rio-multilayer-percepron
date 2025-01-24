@@ -1,5 +1,7 @@
 venv/
 __pycache__/
-csv/created/
-model.pkl
-plots/
+cancer/csv/created/
+cancer/model.pkl
+mnist/mnsit.pkl
+cancer/plots/
+*.pkl

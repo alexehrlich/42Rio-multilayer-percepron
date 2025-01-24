@@ -3,25 +3,38 @@ all: setup
 setup:
 	@echo "Installing the dependencies"
 	@python3 -m virtualenv venv
-	@. venv/bin/activate && pip install -r ./requirements.txt
+	@. venv/bin/activate && pip install -r ./requirements.txt &&
 
-preprocess_data:
-	@. venv/bin/activate && python3 data_preprocess.py
+canc_preprocess_data:
+	@. venv/bin/activate && \
+	python3 ./cancer/data_preprocess.py
 
-train_classifier:
-	@. venv/bin/activate && python3 train_canc_classifier.py
+canc_train_classifier:
+	@. venv/bin/activate && \
+	export PYTHONPATH="$(PWD)" && \
+	python3 ./cancer/train_canc_classifier.py
 
-train_car_linreg:
-	@. venv/bin/activate && python3 train_car_linreg.py
+canc_predict_probe:
+	@. venv/bin/activate && \
+	export PYTHONPATH="$(PWD)" && \
+	python3 ./cancer/prediction.py
 
-prediction:
-	@. venv/bin/activate && python3 prediction.py
+mnist_train_classifier:
+	@. venv/bin/activate && \
+	export PYTHONPATH="$(PWD)" && \
+	python3 ./mnist/train_mnist_classifier.py
+
+mnist_predict_digit:
+	@. venv/bin/activate && \
+	export PYTHONPATH="$(PWD)" && \
+	python3 ./mnist/classify_digit.py
 
 clean:
-	@rm -rf ./csv/created
+	@rm -rf ./cancer/csv/created
 
 fclean: clean
 	@rm -rf ./venv
-	@rm -rf ./plots
-	@rm model.pkl
+	@rm -rf ./cancer/plots
+	@rm ./cancer/model.pkl
+	@rm ./mnist/mnnist.pkl
 	@rm -rf __pycache__
