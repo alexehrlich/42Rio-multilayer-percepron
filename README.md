@@ -7,12 +7,13 @@ This project demonstrates the implementation of a neural network from scratch **
 
 `make setup` to install all dependencies
 
-## Cancer classification
+## Examples
+### Cancer classification
 - `make canc_preprocess_data`: Cleaning and Normalization of the data. Split the Data into 3 substes of **train** and **validation** for the training process and **test** for testing the prediction
 - `make canc_train_classifier`: Train the model with the self written neural_network module
 - `make canc_predict_probe`: Run the test data through the net and evaluate its performance
 
-### Preprocessing
+#### Preprocessing
 The dataset has a slight imbalance of the B and M classes with ratio of 2:1, which is acceptable. No methods like oversampling or undersampling where applied. The subsets remain roughly the same class distribution. 
 
 ```python
@@ -33,14 +34,15 @@ Test class distribution
         M(1): 24 (41.4%)
 ```
 
-## Digit classification
+### Digit classification
 - `make mnist_train_classifier`: Loads the the data from the raw file wihtout any libary to train the model with the MNIST data set
 - `make mnist_predict_probe`: Draw a digit in pygame. Press 'S' to predict the drawing. Press 'D' to clear the canvas. 
 
-## What is a Perceptron?
+## Theory
+### What is a Perceptron?
 A perceptron is a fundamental unit of a neural network. It mimics a biological neuron, receiving inputs, applying weights, summing them, and passing the result through an activation function.
 
-## Training
+### Training
 The network is designed modular and the layer structure, the activation function and the cost function can be chosen. The model is trained using mini batch, which are shuffeled in each epoch to prevent pattern learning. 
 
 ### General network architecture
@@ -53,7 +55,7 @@ With result of the forward pass and the current values of all network parameters
 ### Gradient descent
 See [here!](https://github.com/alexehrlich/42Rio-AI-ft_linear_regression)
 
-### Backpropagation
+#### Backpropagation
 With backpropagation we can calculate every derivative of the cost function with respect to all the network parameters. With the derivative we can tweak every parameter with gradient descent. The following shows a simple one dimensional network and how to calculate the partial derivate of the cost function with respect to the parameters of the first layer. That way the error is ***backpropageted** through the net. It turns out that we can mulitply the error by the transposed matrix and then by the derivative of the acitvation function in order to send the error back through the network.
 ![backprop](./img/backprop.png)
 
