@@ -34,11 +34,10 @@ Test class distribution
 ```
 
 ## Digit classification
-- 
 - `make mnist_train_classifier`: Loads the the data from the raw file wihtout any libary to train the model with the MNIST data set
 - `make mnist_predict_probe`: Draw a digit in pygame. Press 'S' to predict the drawing. Press 'D' to clear the canvas. 
 
-## What is a Perceptron?***
+## What is a Perceptron?
 A perceptron is a fundamental unit of a neural network. It mimics a biological neuron, receiving inputs, applying weights, summing them, and passing the result through an activation function.
 
 ## Training
